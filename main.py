@@ -60,6 +60,9 @@ class TemplateGeneratorApp:
         
         self.preview_tk = None
         
+        # Lista para almacenar grupos de imágenes para procesamiento por lotes
+        self.batch_groups = []
+        
         # Cargar configuración guardada
         self.load_settings()
         
@@ -68,10 +71,9 @@ class TemplateGeneratorApp:
         
         # Construir UI
         self.build_ui()
-        self._update_slot_visibility()
         
-        # Renderizar preview inicial
-        self.render_preview()
+        # Cargar estado inicial después de construir la UI
+        self._load_initial_state()
 
         # Guardar al cerrar
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -80,7 +82,7 @@ class TemplateGeneratorApp:
         """Guardar configuración al cerrar y salir."""
         self.save_settings()
         self.root.destroy()
-
+    
     def save_settings(self):
         """Guarda la configuración actual en un archivo JSON."""
         settings = {
@@ -97,6 +99,7 @@ class TemplateGeneratorApp:
             "n_slots": self.n_slots,
             "bg_img_path": self.bg_img_path,
             "logo_img_path": self.logo_img_path,
+            "batch_groups": self.batch_groups,
         }
         try:
             with open(SETTINGS_FILE, "w") as f:
@@ -131,11 +134,20 @@ class TemplateGeneratorApp:
             self.logo_img_path = settings.get("logo_img_path")
             if self.logo_img_path and os.path.exists(self.logo_img_path):
                 self.logo_img = Image.open(self.logo_img_path).convert("RGBA")
+            
+            self.batch_groups = settings.get("batch_groups", [])
 
         except (json.JSONDecodeError, KeyError) as e:
             print(f"Error cargando configuración, se usará la default: {e}")
         except Exception as e:
             print(f"Error inesperado cargando configuración: {e}")
+            
+    def _load_initial_state(self):
+        """Carga el estado inicial de la UI después de que todos los widgets estén construidos."""
+        self._update_slot_visibility()
+        self.render_preview()
+        if hasattr(self, 'batch_tree'):
+            self._update_batch_treeview()
 
     def load_default_emojis(self):
         """Carga los emojis desde el directorio assets"""
@@ -175,8 +187,14 @@ class TemplateGeneratorApp:
         center = ttk.LabelFrame(main_frame, text="👁️ Vista Previa", padding=10)
         center.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
         
-        right = ttk.LabelFrame(main_frame, text="⚙️ Configuración", padding=10)
-        right.grid(row=0, column=2, sticky="nsew", padx=5, pady=5)
+        self.notebook = ttk.Notebook(main_frame)
+        self.notebook.grid(row=0, column=2, sticky="nsew", padx=5, pady=5)
+        
+        config_tab_frame = ttk.Frame(self.notebook, padding=10)
+        self.notebook.add(config_tab_frame, text="Avanzado ⚙️")
+
+        self.batch_tab_frame = ttk.Frame(self.notebook, padding=10)
+        self.notebook.add(self.batch_tab_frame, text="Lotes 📦")
         
         main_frame.columnconfigure(0, weight=1, minsize=280)
         main_frame.columnconfigure(1, weight=2, minsize=560)
@@ -185,7 +203,8 @@ class TemplateGeneratorApp:
         
         self.build_left_panel(left)
         self.build_center_panel(center)
-        self.build_right_panel(right)
+        self.build_right_panel(config_tab_frame)
+        self.build_batch_panel(self.batch_tab_frame) # Corrected: used self.batch_tab_frame
 
     def build_left_panel(self, parent):
         """Panel izquierdo: imágenes, formas y emojis"""
@@ -274,6 +293,221 @@ class TemplateGeneratorApp:
         
         ttk.Separator(parent).pack(fill=tk.X, pady=15)
 
+    def build_right_panel(self, parent):
+        ttk.Label(parent, text="Fondo y Logo:", style='Header.TLabel').pack(pady=(0, 10))
+        
+        ttk.Button(parent, text="🖼️ Cargar Fondo", command=self.load_bg).pack(fill=tk.X, pady=3)
+        self.bg_label = ttk.Label(parent, text="Sin fondo", style='Info.TLabel')
+        self.bg_label.pack(fill=tk.X)
+        
+        ttk.Button(parent, text="🏷️ Cargar Logo", command=self.load_logo).pack(fill=tk.X, pady=3)
+        self.logo_label = ttk.Label(parent, text="Sin logo", style='Info.TLabel')
+        self.logo_label.pack(fill=tk.X)
+        
+        ttk.Label(parent, text="Tamaño Logo:").pack(anchor=tk.W, pady=(10, 0))
+        ttk.Scale(parent, from_=0.05, to=0.8, variable=self.logo_size, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+
+        ttk.Label(parent, text="Posición X Logo:").pack(anchor=tk.W, pady=(10, 0))
+        ttk.Scale(parent, from_=0, to=1, variable=self.logo_x, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+
+        ttk.Label(parent, text="Posición Y Logo:").pack(anchor=tk.W, pady=(10, 0))
+        ttk.Scale(parent, from_=0, to=1, variable=self.logo_y, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+        
+        ttk.Separator(parent).pack(fill=tk.X, pady=15)
+        
+        ttk.Label(parent, text="Estilo de Título:", style='Header.TLabel').pack(pady=(0, 5))
+        
+        ttk.Label(parent, text="Fuente:").pack(anchor=tk.W)
+        
+        font_button_frame = ttk.Frame(parent)
+        font_button_frame.pack(fill=tk.X, pady=2)
+        
+        fonts = [
+            ("Arial Bold", "arial_bold"), ("Impact", "impact"), ("Comic Sans", "comic"),
+            ("Times", "times")
+        ]
+        
+        row, col = 0, 0
+        for name, value in fonts:
+            btn = ttk.Button(font_button_frame, text=name, command=lambda v=value: self.set_font(v), width=10)
+            btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
+            col += 1
+            if col > 2:
+                col = 0
+                row += 1
+        
+        font_button_frame.columnconfigure(0, weight=1)
+        font_button_frame.columnconfigure(1, weight=1)
+        font_button_frame.columnconfigure(2, weight=1)
+        
+        ttk.Separator(parent).pack(fill=tk.X, pady=10)
+        
+        ttk.Label(parent, text="Efecto:").pack(anchor=tk.W)
+
+        effect_button_frame = ttk.Frame(parent)
+        effect_button_frame.pack(fill=tk.X, pady=2)
+
+        effects = [
+            ("Simple", "simple"), ("Contorno", "contorno"),
+            ("Sombra Suave", "sombra_suave"), ("Impacto", "impacto")
+        ]
+        
+        row, col = 0, 0
+        for name, value in effects:
+            btn = ttk.Button(effect_button_frame, text=name, command=lambda v=value: self.set_title_style(v), width=10)
+            btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
+            col += 1
+            if col > 2:
+                col = 0
+                row += 1
+        
+        effect_button_frame.columnconfigure(0, weight=1)
+        effect_button_frame.columnconfigure(1, weight=1)
+        effect_button_frame.columnconfigure(2, weight=1)
+        
+        ttk.Separator(parent).pack(fill=tk.X, pady=15)
+        ttk.Separator(parent).pack(fill=tk.X, pady=15)
+        
+        ttk.Button(parent, text="🗑️ Limpiar Todo", command=self.clear_all).pack(fill=tk.X, pady=5)
+        
+        if HAS_TKDND:
+            ttk.Label(parent, text="✅ Drag & Drop activado", foreground="green").pack(pady=10)
+            try:
+                self.root.drop_target_register(DND_FILES)
+                self.root.dnd_bind('<<Drop>>', self.on_drop)
+            except:
+                pass
+
+    def build_batch_panel(self, parent):
+        """Panel para la generación por lotes"""
+        ttk.Label(parent, text="Configuración de Lotes:", style='Header.TLabel').pack(pady=(0, 10), anchor=tk.W)
+
+        add_group_frame = ttk.Frame(parent)
+        add_group_frame.pack(fill=tk.X, pady=5)
+
+        ttk.Button(add_group_frame, text="➕ Añadir Grupo de Imágenes", command=self.add_batch_group).pack(side=tk.LEFT, expand=True, fill=tk.X)
+        
+        ttk.Separator(parent).pack(fill=tk.X, pady=10)
+
+        self.batch_tree = ttk.Treeview(parent, columns=("Num. Imágenes", "Rutas"), show="headings")
+        self.batch_tree.heading("Num. Imágenes", text="Imágenes")
+        self.batch_tree.heading("Rutas", text="Rutas de Archivo")
+        self.batch_tree.column("Num. Imágenes", width=100, anchor=tk.CENTER)
+        self.batch_tree.column("Rutas", width=250, anchor=tk.W)
+        self.batch_tree.pack(fill=tk.BOTH, expand=True)
+
+        tree_scroll = ttk.Scrollbar(parent, orient="vertical", command=self.batch_tree.yview)
+        tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self.batch_tree.configure(yscrollcommand=tree_scroll.set)
+
+        group_buttons_frame = ttk.Frame(parent)
+        group_buttons_frame.pack(fill=tk.X, pady=5)
+
+        ttk.Button(group_buttons_frame, text="🗑️ Eliminar Grupo", command=self.remove_batch_group).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 5))
+        ttk.Button(group_buttons_frame, text="▶️ Iniciar Lote", command=self.start_batch_processing).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(5, 0))
+
+    def add_batch_group(self, paths=None):
+        """Permite al usuario añadir un grupo de imágenes para procesamiento por lotes."""
+        if paths is None:
+            paths = filedialog.askopenfilenames(
+                title="Selecciona 2, 3 o 4 imágenes para el grupo",
+                filetypes=[("Imágenes", "*.png *.jpg *.jpeg *.webp *.bmp"), ("Todos", "*.*")]
+            )
+        if not paths:
+            return
+        
+        num_images = len(paths)
+        if num_images not in [2, 3, 4]:
+            messagebox.showwarning("Cantidad Incorrecta", "Por favor, selecciona 2, 3 o 4 imágenes por grupo.")
+            return
+
+        self.batch_groups.append({"count": num_images, "paths": list(paths)})
+        self._update_batch_treeview()
+
+    def remove_batch_group(self):
+        """Elimina el grupo seleccionado del Treeview."""
+        selected_item = self.batch_tree.selection()
+        if not selected_item:
+            messagebox.showwarning("Ningún Grupo Seleccionado", "Por favor, selecciona un grupo para eliminar.")
+            return
+
+        index = self.batch_tree.index(selected_item[0])
+        del self.batch_groups[index]
+        self._update_batch_treeview()
+
+    def _update_batch_treeview(self):
+        """Actualiza la visualización de los grupos en el Treeview."""
+        if not hasattr(self, 'batch_tree'):
+            return
+        for iid in self.batch_tree.get_children():
+            self.batch_tree.delete(iid)
+
+        for i, group in enumerate(self.batch_groups):
+            display_paths = [os.path.basename(p) for p in group["paths"]]
+            paths_str = ", ".join(display_paths[:2])
+            if len(display_paths) > 2:
+                paths_str += f", ... ({len(display_paths) - 2} más)"
+            
+            self.batch_tree.insert("", "end", iid=str(i), values=(group["count"], paths_str))
+
+    def start_batch_processing(self):
+        """Inicia el procesamiento de todos los grupos."""
+        if not self.batch_groups:
+            messagebox.showwarning("Sin Grupos", "No hay grupos de imágenes para procesar.")
+            return
+
+        output_dir = filedialog.askdirectory(title="Selecciona la carpeta de destino para las imágenes generadas")
+        if not output_dir:
+            return
+
+        self.save_settings() 
+
+        try:
+            for i, group in enumerate(self.batch_groups):
+                num_images_in_group = group["count"]
+                image_paths = group["paths"]
+
+                for slot_idx in range(SLOT_MAX):
+                    if slot_idx < num_images_in_group:
+                        try:
+                            self.slots[slot_idx] = Image.open(image_paths[slot_idx]).convert("RGBA")
+                        except Exception as e:
+                            print(f"Error al cargar imagen del lote {image_paths[slot_idx]}: {e}")
+                            self.slots[slot_idx] = None
+                    else:
+                        self.slots[slot_idx] = None
+                
+                self.n_slots = num_images_in_group
+
+                generated_image = compose_template(
+                    FINAL_SIZE, self.bg_img, 
+                    [s for s in self.slots[:self.n_slots] if s is not None],
+                    self.default_emojis[:self.n_slots],
+                    self.title_text.get(), self.logo_img,
+                    font_family=self.font_family.get(),
+                    title_style=self.title_style.get(),
+                    image_shape=self.image_shape.get(),
+                    logo_size=self.logo_size.get(),
+                    logo_x=self.logo_x.get(),
+                    logo_y=self.logo_y.get(),
+                    num_slots=self.n_slots,
+                    emoji_size=self.emoji_size.get(),
+                    emoji_x_offset=self.emoji_x_offset.get(),
+                    emoji_y_offset=self.emoji_y_offset.get()
+                )
+                
+                output_filename = os.path.join(output_dir, f"plantilla_lote_{i+1}.png")
+                generated_image.save(output_filename, quality=95)
+            
+            messagebox.showinfo("Procesamiento de Lotes Completado", 
+                                "Todas las imágenes del lote han sido generadas y guardadas.")
+
+        except Exception as e:
+            messagebox.showerror("Error en Lote", f"Ocurrió un error durante el procesamiento por lotes:\n{str(e)}")
+        finally:
+            self._update_slot_visibility()
+            self.render_preview()
+
     def set_image_shape(self, shape_name):
         self.image_shape.set(shape_name)
         self.render_preview()
@@ -330,7 +564,7 @@ class TemplateGeneratorApp:
         
         fonts = [
             ("Arial Bold", "arial_bold"), ("Impact", "impact"), ("Comic Sans", "comic"),
-            ("Times", "times"), ("Burbank", "burbank"), ("Montserrat", "montserrat")
+            ("Times", "times")
         ]
         
         row, col = 0, 0
@@ -496,16 +730,42 @@ class TemplateGeneratorApp:
 
     def on_drop(self, event):
         paths = self.root.splitlist(event.data)
-        for p in paths:
-            for i in range(SLOT_MAX):
-                if self.slots[i] is None:
-                    try:
-                        self.slots[i] = Image.open(p).convert("RGBA")
-                        self.slot_labels[i].config(text="✓ Cargada", style='Success.TLabel')
-                        break
-                    except:
-                        pass
-        self.render_preview()
+        
+        # Determinar si el drop ocurrió sobre la pestaña de lotes
+        is_drop_on_batch_tab = False
+        target_widget = event.widget
+        # Recorrer la jerarquía de widgets para ver si batch_tab_frame o batch_tree es un ancestro
+        while target_widget is not None:
+            if target_widget == self.batch_tab_frame or target_widget == self.batch_tree:
+                is_drop_on_batch_tab = True
+                break
+            # Obtener el widget padre de forma segura
+            if hasattr(target_widget, 'master'):
+                target_widget = target_widget.master
+            else:
+                target_widget = None # No hay más padres
+        
+
+        if is_drop_on_batch_tab:
+            num_dropped_images = len(paths)
+            if num_dropped_images in [2, 3, 4]:
+                self.add_batch_group(paths=paths)
+                # Cambiar a la pestaña de lotes si no está ya seleccionada
+                self.notebook.select(self.batch_tab_frame)
+            else:
+                messagebox.showwarning("Cantidad Incorrecta", "Arrastra 2, 3 o 4 imágenes para crear un grupo en la pestaña de lotes.")
+        else:
+            # Lógica existente para arrastrar y soltar en slots individuales
+            for p in paths:
+                for i in range(SLOT_MAX):
+                    if self.slots[i] is None:
+                        try:
+                            self.slots[i] = Image.open(p).convert("RGBA")
+                            self.slot_labels[i].config(text="✓ Cargada", style='Success.TLabel')
+                            break
+                        except Exception as e:
+                            messagebox.showerror("Error", f"Error al cargar:\n{str(e)}")
+            self.render_preview()
 
     def render_preview(self):
         """Renderizar vista previa"""

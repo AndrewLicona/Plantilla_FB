@@ -19,8 +19,6 @@ FONT_FILENAMES = {
     'impact': ['impact.ttf'],
     'comic': ['comicbd.ttf', 'Comic-Sans-MS-Bold.ttf'],
     'times': ['timesbd.ttf', 'Times-New-Roman-Bold.ttf'],
-    'burbank': ['Burbank-Big-Condensed-Bold.ttf', 'Burbank.ttf'],
-    'montserrat': ['Montserrat-Regular.ttf', 'Montserrat.ttf']
 }
 
 # Factores de escala para fuentes (ajuste fino para tamaños consistentes)
@@ -29,8 +27,6 @@ FONT_SCALING_FACTORS = {
     'impact': 1.0,
     'comic': 1.0,
     'times': 1.0,
-    'burbank': 1.0,  # Burbank often appears larger, so scale down
-    'montserrat': 1.0# Montserrat can also be a bit large
 }
 
 # Estilos de título disponibles

@@ -13,38 +13,14 @@ DEFAULT_BG_COLOR = (18, 18, 24)
 TITLE_COLOR = (255, 255, 255)
 TITLE_SHADOW_COLOR = (0, 0, 0, 180)
 
-# Fuentes disponibles (prioridad)
-FONT_PATHS = {
-    'arial_bold': [
-        "C:\\Windows\\Fonts\\arialbd.ttf",
-        "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-    ],
-    'impact': [
-        "C:\\Windows\\Fonts\\impact.ttf",
-        "/Library/Fonts/Impact.ttf",
-        "/usr/share/fonts/truetype/msttcorefonts/Impact.ttf",
-    ],
-    'comic': [
-        "C:\\Windows\\Fonts\\comicbd.ttf",
-        "/Library/Fonts/Comic Sans MS Bold.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
-    ],
-    'times': [
-        "C:\\Windows\\Fonts\\timesbd.ttf",
-        "/Library/Fonts/Times New Roman Bold.ttf",
-        "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf",
-    ],
-    'burbank': [
-        "C:\\Windows\\Fonts\\Burbank.ttf",
-        "/Library/Fonts/Burbank.ttf",
-        "/usr/share/fonts/truetype/Burbank/Burbank.ttf",
-    ],
-    'montserrat': [
-        "C:\\Windows\\Fonts\\Montserrat-Regular.ttf",
-        "/Library/Fonts/Montserrat-Regular.ttf",
-        "/usr/share/fonts/truetype/Montserrat/Montserrat-Regular.ttf",
-    ]
+# Nombres de archivo de fuentes a buscar en el sistema
+FONT_FILENAMES = {
+    'arial_bold': ['arialbd.ttf', 'Arial-Bold.ttf'],
+    'impact': ['impact.ttf'],
+    'comic': ['comicbd.ttf', 'Comic-Sans-MS-Bold.ttf'],
+    'times': ['timesbd.ttf', 'Times-New-Roman-Bold.ttf'],
+    'burbank': ['Burbank-Big-Condensed-Bold.ttf', 'Burbank.ttf'],
+    'montserrat': ['Montserrat-Regular.ttf', 'Montserrat.ttf']
 }
 
 # Factores de escala para fuentes (ajuste fino para tamaños consistentes)

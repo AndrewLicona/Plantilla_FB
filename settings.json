@@ -1,13 +1,15 @@
 {
     "title_text": "\u00a1VOTA POR TU CRACK!",
     "font_family": "impact",
-    "title_style": "simple",
+    "title_style": "sombra_suave",
     "image_shape": "square",
-    "logo_size": 0.17840466926070037,
-    "logo_x": 0.5,
+    "logo_size": 0.1404669260700389,
+    "logo_x": 0.49416342412451364,
     "logo_y": 0.5,
-    "emoji_size": 0.48793859649122806,
-    "emoji_x_offset": 0.0,
-    "emoji_y_offset": 0.0,
-    "n_slots": 4
+    "emoji_size": 0.5129139072847683,
+    "emoji_x_offset": -24.503311258278146,
+    "emoji_y_offset": 15.231788079470192,
+    "n_slots": 4,
+    "bg_img_path": "C:/Users/Usuario/Documents/AJDREW GAMEPLAY/COSAS PARA MINIATURAS/AUX PHOTOSHOP/png-transparent-paper-printing-creased-white-paper-texture-angle-white-thumbnail.png",
+    "logo_img_path": "C:/Users/Usuario/Documents/AJDREW GAMEPLAY/LOGO/LOGO AJDREW GAMEPLAYS (1).png"
 }

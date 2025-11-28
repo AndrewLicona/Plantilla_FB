@@ -154,7 +154,7 @@ def compose_template(
                      fill=(0, 0, 0, 180), font=font_emoji)
             draw.text((emoji_x_final, emoji_y_final), txt, 
                      fill=(255, 255, 255), font=font_emoji)
-    
+
     # 4. LOGO (dinámico)
     if logo_img:
         lw, lh = logo_img.size
@@ -169,5 +169,5 @@ def compose_template(
         y = int(H * logo_y) - new_lh // 2
         
         base.paste(logo, (x, y), logo)
-
+    
     return base.convert("RGB")

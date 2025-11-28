@@ -6,7 +6,8 @@ Funciones auxiliares para procesamiento de imágenes
 import os
 import sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
-from config import FONT_PATHS, FONT_SCALING_FACTORS
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
+from config import FONT_FILENAMES, FONT_SCALING_FACTORS
 
 
 def resource_path(relative):
@@ -19,20 +20,33 @@ def resource_path(relative):
 
 
 def load_font(font_family='arial_bold', size=72, scale_factor=1.0):
-    """Carga una fuente del sistema"""
-    candidates = FONT_PATHS.get(font_family, FONT_PATHS['arial_bold'])
+    """Carga una fuente buscando en los directorios del sistema."""
     
-    scaled_size = int(size * scale_factor) # Define scaled_size here
+    # Obtener nombres de archivo candidatos para la familia de fuentes
+    font_filenames = FONT_FILENAMES.get(font_family, FONT_FILENAMES['arial_bold'])
+    scaled_size = int(size * scale_factor)
+    
+    # Obtener directorios de fuentes del sistema
+    font_dirs = []
+    if sys.platform == "win32":
+        font_dirs.append(os.path.join(os.environ.get("SystemRoot", "C:\\Windows"), "Fonts"))
+    elif sys.platform == "linux":
+        font_dirs.extend(['/usr/share/fonts', '/usr/local/share/fonts', os.path.expanduser('~/.fonts')])
+    elif sys.platform == "darwin":
+        font_dirs.extend(['/System/Library/Fonts', '/Library/Fonts', os.path.expanduser('~/Library/Fonts')])
 
-    for font_path in candidates: # Iterate through font paths
-        if font_path and os.path.exists(font_path): # Check if path exists
+    # Buscar la fuente en los directorios del sistema
+    for font_dir in font_dirs:
+        for filename in font_filenames:
+            font_path = os.path.join(font_dir, filename)
             try:
-                return ImageFont.truetype(font_path, scaled_size)
+                if os.path.exists(font_path):
+                    return ImageFont.truetype(font_path, scaled_size)
             except Exception:
-                pass
+                continue
     
-    # Fallback a fuente por defecto
-    return ImageFont.load_default(size) # Use original 'size' for default fallback
+    # Fallback a la fuente por defecto de PIL si no se encuentra
+    return ImageFont.load_default(size)
 
 
 def apply_cover_background(base, fondo_img):

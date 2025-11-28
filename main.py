@@ -15,7 +15,6 @@ from composer import compose_template
 # --- Constantes ---
 SETTINGS_FILE = "settings.json"
 
-
 # Intentar importar tkinterdnd2
 HAS_TKDND = False
 try:
@@ -40,6 +39,8 @@ class TemplateGeneratorApp:
         self.n_slots = 3
         self.bg_img = None
         self.logo_img = None
+        self.bg_img_path = None
+        self.logo_img_path = None
         
         self.slot_buttons = []
         self.slot_labels = []
@@ -94,6 +95,8 @@ class TemplateGeneratorApp:
             "emoji_x_offset": self.emoji_x_offset.get(),
             "emoji_y_offset": self.emoji_y_offset.get(),
             "n_slots": self.n_slots,
+            "bg_img_path": self.bg_img_path,
+            "logo_img_path": self.logo_img_path,
         }
         try:
             with open(SETTINGS_FILE, "w") as f:
@@ -120,6 +123,14 @@ class TemplateGeneratorApp:
             self.emoji_x_offset.set(settings.get("emoji_x_offset", self.emoji_x_offset.get()))
             self.emoji_y_offset.set(settings.get("emoji_y_offset", self.emoji_y_offset.get()))
             self.n_slots = settings.get("n_slots", self.n_slots)
+
+            self.bg_img_path = settings.get("bg_img_path")
+            if self.bg_img_path and os.path.exists(self.bg_img_path):
+                self.bg_img = Image.open(self.bg_img_path).convert("RGBA")
+            
+            self.logo_img_path = settings.get("logo_img_path")
+            if self.logo_img_path and os.path.exists(self.logo_img_path):
+                self.logo_img = Image.open(self.logo_img_path).convert("RGBA")
 
         except (json.JSONDecodeError, KeyError) as e:
             print(f"Error cargando configuración, se usará la default: {e}")
@@ -149,7 +160,6 @@ class TemplateGeneratorApp:
         style = ttk.Style()
         style.theme_use('clam')
         
-        # Personalizar colores
         style.configure('Header.TLabel', font=('Arial', 10, 'bold'))
         style.configure('Success.TLabel', foreground='green')
         style.configure('Info.TLabel', foreground='gray')
@@ -159,7 +169,6 @@ class TemplateGeneratorApp:
         main_frame = ttk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
-        # Tres columnas principales
         left = ttk.LabelFrame(main_frame, text="📸 Imágenes", padding=10)
         left.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         
@@ -169,46 +178,36 @@ class TemplateGeneratorApp:
         right = ttk.LabelFrame(main_frame, text="⚙️ Configuración", padding=10)
         right.grid(row=0, column=2, sticky="nsew", padx=5, pady=5)
         
-        # Configurar grid
         main_frame.columnconfigure(0, weight=1, minsize=280)
         main_frame.columnconfigure(1, weight=2, minsize=560)
         main_frame.columnconfigure(2, weight=1, minsize=320)
         main_frame.rowconfigure(0, weight=1)
         
-        # Construir cada panel
         self.build_left_panel(left)
         self.build_center_panel(center)
         self.build_right_panel(right)
 
     def build_left_panel(self, parent):
         """Panel izquierdo: imágenes, formas y emojis"""
-        ttk.Label(parent, text="Añadir imágenes (2-4):", 
-                 style='Header.TLabel').pack(pady=(0, 10), anchor=tk.W)
+        ttk.Label(parent, text="Añadir imágenes (2-4):", style='Header.TLabel').pack(pady=(0, 10), anchor=tk.W)
         
-        # Frame to hold the slot buttons, arranged in a grid
         slots_container_frame = ttk.Frame(parent)
         slots_container_frame.pack(fill=tk.X, pady=5)
         
-        # Configure columns in slots_container_frame for 2-column layout
         slots_container_frame.columnconfigure(0, weight=1)
         slots_container_frame.columnconfigure(1, weight=1)
         
         for i in range(SLOT_MAX):
-            # Create a sub-frame for each slot's buttons and label
             slot_card_frame = ttk.Frame(slots_container_frame, relief=tk.RIDGE, borderwidth=1, padding=5)
-            
             row = i // 2 
             col = i % 2
             slot_card_frame.grid(row=row, column=col, sticky="nsew", padx=3, pady=3)
-            
             slot_card_frame.columnconfigure(0, weight=1)
             
-            btn_img = ttk.Button(slot_card_frame, text=f"📁 Imagen {i+1}", width=12,
-                                 command=lambda idx=i: self.add_image(idx))
+            btn_img = ttk.Button(slot_card_frame, text=f"📁 Imagen {i+1}", width=12, command=lambda idx=i: self.add_image(idx))
             btn_img.grid(row=0, column=0, sticky="ew", padx=(0,2), pady=(0,2))
 
-            rm = ttk.Button(slot_card_frame, text="❌", width=3,
-                            command=lambda idx=i: self.remove_image(idx))
+            rm = ttk.Button(slot_card_frame, text="❌", width=3, command=lambda idx=i: self.remove_image(idx))
             rm.grid(row=0, column=1, sticky="e", pady=(0,2))
             self.remove_buttons.append(rm)
             
@@ -218,9 +217,7 @@ class TemplateGeneratorApp:
             lbl.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(0,2))
             self.slot_labels.append(lbl)
 
-        ttk.Button(parent, text="🗑️ Limpiar Imágenes",
-                command=self.clear_slot_images).pack(fill=tk.X, pady=5)
-        
+        ttk.Button(parent, text="🗑️ Limpiar Imágenes", command=self.clear_slot_images).pack(fill=tk.X, pady=5)
         ttk.Separator(parent).pack(fill=tk.X, pady=10)
         
         ttk.Label(parent, text="Cantidad de imágenes:").pack(anchor=tk.W)
@@ -230,8 +227,7 @@ class TemplateGeneratorApp:
         
         row, col = 0, 0
         for n in range(2, SLOT_MAX + 1):
-            btn = ttk.Button(slots_button_frame, text=str(n), 
-                           command=lambda num=n: self._update_n_slots_and_render(num), width=10)
+            btn = ttk.Button(slots_button_frame, text=str(n), command=lambda num=n: self._update_n_slots_and_render(num), width=10)
             btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
             col += 1
             if col > 2:
@@ -244,21 +240,15 @@ class TemplateGeneratorApp:
 
         ttk.Separator(parent).pack(fill=tk.X, pady=15)
 
-        ttk.Label(parent, text="Forma de Imágenes:", 
-                 style='Header.TLabel').pack(pady=(0, 5), anchor=tk.W)
+        ttk.Label(parent, text="Forma de Imágenes:", style='Header.TLabel').pack(pady=(0, 5), anchor=tk.W)
 
         shape_button_frame = ttk.Frame(parent)
         shape_button_frame.pack(fill=tk.X, pady=2)
         
-        shapes = [
-            ("Cuadradas", "square"),
-            ("Redondeadas", "rounded"),
-            ("Círculos", "circle")
-        ]
+        shapes = [("Cuadradas", "square"), ("Redondeadas", "rounded"), ("Círculos", "circle")]
         row, col = 0, 0
         for name, value in shapes:
-            btn = ttk.Button(shape_button_frame, text=name, 
-                           command=lambda v=value: self.set_image_shape(v), width=10)
+            btn = ttk.Button(shape_button_frame, text=name, command=lambda v=value: self.set_image_shape(v), width=10)
             btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
             col += 1
             if col > 2:
@@ -271,20 +261,16 @@ class TemplateGeneratorApp:
         
         ttk.Separator(parent).pack(fill=tk.X, pady=15)
         
-        ttk.Label(parent, text="Configuración de Emojis:", 
-                 style='Header.TLabel').pack(pady=(0, 10))
+        ttk.Label(parent, text="Configuración de Emojis:", style='Header.TLabel').pack(pady=(0, 10))
 
         ttk.Label(parent, text="Tamaño Emoji:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0.1, to=3.0, variable=self.emoji_size,
-                  command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+        ttk.Scale(parent, from_=0.1, to=3.0, variable=self.emoji_size, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
 
         ttk.Label(parent, text="Posición X Emoji:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=-100, to=100, variable=self.emoji_x_offset,
-                  command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+        ttk.Scale(parent, from_=-100, to=100, variable=self.emoji_x_offset, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
 
         ttk.Label(parent, text="Posición Y Emoji:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=-100, to=100, variable=self.emoji_y_offset,
-                  command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+        ttk.Scale(parent, from_=-100, to=100, variable=self.emoji_y_offset, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
         
         ttk.Separator(parent).pack(fill=tk.X, pady=15)
 
@@ -296,60 +282,46 @@ class TemplateGeneratorApp:
         canvas_frame = ttk.Frame(parent)
         canvas_frame.pack(pady=10)
         
-        self.preview_canvas = tk.Canvas(canvas_frame, width=CANVAS_SIZE[0],
-                                       height=CANVAS_SIZE[1], bg="#12121a",
-                                       highlightthickness=2, 
-                                       highlightbackground="#444")
+        self.preview_canvas = tk.Canvas(canvas_frame, width=CANVAS_SIZE[0], height=CANVAS_SIZE[1], bg="#12121a", highlightthickness=2, highlightbackground="#444")
         self.preview_canvas.pack()
         
         title_frame = ttk.Frame(parent)
         title_frame.pack(fill=tk.X, pady=10)
         
-        ttk.Label(title_frame, text="Título:", 
-                 style='Header.TLabel').pack(anchor=tk.W)
-        self.title_entry = ttk.Entry(title_frame, textvariable=self.title_text,
-                                     font=('Arial', 12))
+        ttk.Label(title_frame, text="Título:", style='Header.TLabel').pack(anchor=tk.W)
+        self.title_entry = ttk.Entry(title_frame, textvariable=self.title_text, font=('Arial', 12))
         self.title_entry.pack(fill=tk.X, pady=5)
         self.title_entry.bind("<KeyRelease>", lambda e: self.render_preview())
         
         btn_frame = ttk.Frame(parent)
         btn_frame.pack(pady=10)
         
-        ttk.Button(btn_frame, text="💾 Guardar Plantilla",
-                  command=self.generate_and_save).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btn_frame, text="🔄 Actualizar Vista",
-                  command=self.render_preview).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="💾 Guardar Plantilla", command=self.generate_and_save).pack(side=tk.LEFT, padx=5)
+        ttk.Button(btn_frame, text="🔄 Actualizar Vista", command=self.render_preview).pack(side=tk.LEFT, padx=5)
 
     def build_right_panel(self, parent):
-        ttk.Label(parent, text="Fondo y Logo:", 
-                 style='Header.TLabel').pack(pady=(0, 10))
+        ttk.Label(parent, text="Fondo y Logo:", style='Header.TLabel').pack(pady=(0, 10))
         
-        ttk.Button(parent, text="🖼️ Cargar Fondo",
-                  command=self.load_bg).pack(fill=tk.X, pady=3)
+        ttk.Button(parent, text="🖼️ Cargar Fondo", command=self.load_bg).pack(fill=tk.X, pady=3)
         self.bg_label = ttk.Label(parent, text="Sin fondo", style='Info.TLabel')
         self.bg_label.pack(fill=tk.X)
         
-        ttk.Button(parent, text="🏷️ Cargar Logo",
-                  command=self.load_logo).pack(fill=tk.X, pady=3)
+        ttk.Button(parent, text="🏷️ Cargar Logo", command=self.load_logo).pack(fill=tk.X, pady=3)
         self.logo_label = ttk.Label(parent, text="Sin logo", style='Info.TLabel')
         self.logo_label.pack(fill=tk.X)
         
         ttk.Label(parent, text="Tamaño Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0.05, to=0.8, variable=self.logo_size,
-                  command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+        ttk.Scale(parent, from_=0.05, to=0.8, variable=self.logo_size, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
 
         ttk.Label(parent, text="Posición X Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0, to=1, variable=self.logo_x,
-                  command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+        ttk.Scale(parent, from_=0, to=1, variable=self.logo_x, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
 
         ttk.Label(parent, text="Posición Y Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0, to=1, variable=self.logo_y,
-                  command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
+        ttk.Scale(parent, from_=0, to=1, variable=self.logo_y, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
         
         ttk.Separator(parent).pack(fill=tk.X, pady=15)
         
-        ttk.Label(parent, text="Estilo de Título:", 
-                 style='Header.TLabel').pack(pady=(0, 5))
+        ttk.Label(parent, text="Estilo de Título:", style='Header.TLabel').pack(pady=(0, 5))
         
         ttk.Label(parent, text="Fuente:").pack(anchor=tk.W)
         
@@ -357,18 +329,13 @@ class TemplateGeneratorApp:
         font_button_frame.pack(fill=tk.X, pady=2)
         
         fonts = [
-            ("Arial Bold", "arial_bold"),
-            ("Impact", "impact"),
-            ("Comic Sans", "comic"),
-            ("Times", "times"),
-            ("Burbank", "burbank"),
-            ("Montserrat", "montserrat")
+            ("Arial Bold", "arial_bold"), ("Impact", "impact"), ("Comic Sans", "comic"),
+            ("Times", "times"), ("Burbank", "burbank"), ("Montserrat", "montserrat")
         ]
         
         row, col = 0, 0
         for name, value in fonts:
-            btn = ttk.Button(font_button_frame, text=name, 
-                           command=lambda v=value: self.set_font(v), width=10)
+            btn = ttk.Button(font_button_frame, text=name, command=lambda v=value: self.set_font(v), width=10)
             btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
             col += 1
             if col > 2:
@@ -387,16 +354,13 @@ class TemplateGeneratorApp:
         effect_button_frame.pack(fill=tk.X, pady=2)
 
         effects = [
-            ("Simple", "simple"),
-            ("Contorno", "contorno"),
-            ("Sombra Suave", "sombra_suave"),
-            ("Impacto", "impacto")
+            ("Simple", "simple"), ("Contorno", "contorno"),
+            ("Sombra Suave", "sombra_suave"), ("Impacto", "impacto")
         ]
         
         row, col = 0, 0
         for name, value in effects:
-            btn = ttk.Button(effect_button_frame, text=name, 
-                           command=lambda v=value: self.set_title_style(v), width=10)
+            btn = ttk.Button(effect_button_frame, text=name, command=lambda v=value: self.set_title_style(v), width=10)
             btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
             col += 1
             if col > 2:
@@ -408,15 +372,12 @@ class TemplateGeneratorApp:
         effect_button_frame.columnconfigure(2, weight=1)
         
         ttk.Separator(parent).pack(fill=tk.X, pady=15)
-        
         ttk.Separator(parent).pack(fill=tk.X, pady=15)
         
-        ttk.Button(parent, text="🗑️ Limpiar Todo",
-                  command=self.clear_all).pack(fill=tk.X, pady=5)
+        ttk.Button(parent, text="🗑️ Limpiar Todo", command=self.clear_all).pack(fill=tk.X, pady=5)
         
         if HAS_TKDND:
-            ttk.Label(parent, text="✅ Drag & Drop activado",
-                     foreground="green").pack(pady=10)
+            ttk.Label(parent, text="✅ Drag & Drop activado", foreground="green").pack(pady=10)
             try:
                 self.root.drop_target_register(DND_FILES)
                 self.root.dnd_bind('<<Drop>>', self.on_drop)
@@ -455,15 +416,13 @@ class TemplateGeneratorApp:
             
             if not is_visible:
                 self.slot_labels[i].config(text="", style='Info.TLabel')
-                self.slots[i] = None
         
         self.render_preview()
 
     def add_image(self, idx):
         paths = filedialog.askopenfilenames(
             title="Selecciona imagen(es)",
-            filetypes=[("Imágenes", "*.png *.jpg *.jpeg *.webp *.bmp"),
-                      ("Todos", "*.*")]
+            filetypes=[("Imágenes", "*.png *.jpg *.jpeg *.webp *.bmp"), ("Todos", "*.*")]
         )
         if not paths:
             return
@@ -474,8 +433,7 @@ class TemplateGeneratorApp:
                 break
             try:
                 self.slots[slot] = Image.open(p).convert("RGBA")
-                self.slot_labels[slot].config(text="✓ Cargada", 
-                                             style='Success.TLabel')
+                self.slot_labels[slot].config(text="✓ Cargada", style='Success.TLabel')
                 self.slot_buttons[slot].config(text=f"📁 Cambiar {slot+1}")
             except Exception as e:
                 messagebox.showerror("Error", f"Error al cargar:\n{str(e)}")
@@ -483,7 +441,6 @@ class TemplateGeneratorApp:
         self.render_preview()
 
     def clear_slot_images(self):
-        """Limpia solo las imágenes de los slots."""
         if messagebox.askyesno("Confirmar", "¿Limpiar todas las imágenes de los slots?"):
             self.slots = [None] * SLOT_MAX
             for i in range(SLOT_MAX):
@@ -498,29 +455,23 @@ class TemplateGeneratorApp:
         self.render_preview()
 
     def load_bg(self):
-        p = filedialog.askopenfilename(
-            title="Selecciona fondo",
-            filetypes=[("Imágenes", "*.png *.jpg *.jpeg *.webp *.bmp")]
-        )
+        p = filedialog.askopenfilename(title="Selecciona fondo", filetypes=[("Imágenes", "*.png *.jpg *.jpeg *.webp *.bmp")])
         if p:
             try:
                 self.bg_img = Image.open(p).convert("RGBA")
-                self.bg_label.config(text="✓ Fondo cargado", 
-                                    style='Success.TLabel')
+                self.bg_img_path = p
+                self.bg_label.config(text="✓ Fondo cargado", style='Success.TLabel')
             except Exception as e:
                 messagebox.showerror("Error", str(e))
         self.render_preview()
 
     def load_logo(self):
-        p = filedialog.askopenfilename(
-            title="Selecciona logo",
-            filetypes=[("Imágenes", "*.png *.jpg *.jpeg *.webp *.bmp")]
-        )
+        p = filedialog.askopenfilename(title="Selecciona logo", filetypes=[("Imágenes", "*.png *.jpg *.jpeg *.webp *.bmp")])
         if p:
             try:
                 self.logo_img = Image.open(p).convert("RGBA")
-                self.logo_label.config(text="✓ Logo cargado",
-                                      style='Success.TLabel')
+                self.logo_img_path = p
+                self.logo_label.config(text="✓ Logo cargado", style='Success.TLabel')
             except Exception as e:
                 messagebox.showerror("Error", str(e))
         self.render_preview()
@@ -530,6 +481,8 @@ class TemplateGeneratorApp:
             self.slots = [None] * SLOT_MAX
             self.bg_img = None
             self.logo_img = None
+            self.bg_img_path = None
+            self.logo_img_path = None
             self.title_text.set("¡VOTA POR TU CRACK!")
             
             for i in range(SLOT_MAX):
@@ -548,8 +501,7 @@ class TemplateGeneratorApp:
                 if self.slots[i] is None:
                     try:
                         self.slots[i] = Image.open(p).convert("RGBA")
-                        self.slot_labels[i].config(text="✓ Cargada",
-                                                  style='Success.TLabel')
+                        self.slot_labels[i].config(text="✓ Cargada", style='Success.TLabel')
                         break
                     except:
                         pass
@@ -570,19 +522,13 @@ class TemplateGeneratorApp:
                 bbox = draw.textbbox((0, 0), "?", font=fnt)
                 tw = bbox[2] - bbox[0]
                 th = bbox[3] - bbox[1]
-                draw.text((150 - tw//2, 150 - th//2), "?", 
-                         fill=(200, 200, 200), font=fnt)
+                draw.text((150 - tw//2, 150 - th//2), "?", fill=(200, 200, 200), font=fnt)
                 imgs.append(placeholder)
             
             emojis = self.default_emojis[:slots_count]
             
             preview = compose_template(
-                CANVAS_SIZE,
-                self.bg_img,
-                imgs,
-                emojis,
-                self.title_text.get(),
-                self.logo_img,
+                CANVAS_SIZE, self.bg_img, imgs, emojis, self.title_text.get(), self.logo_img,
                 font_family=self.font_family.get(),
                 title_style=self.title_style.get(),
                 image_shape=self.image_shape.get(),
@@ -597,10 +543,7 @@ class TemplateGeneratorApp:
             
             self.preview_tk = ImageTk.PhotoImage(preview)
             self.preview_canvas.delete("all")
-            self.preview_canvas.create_image(
-                CANVAS_SIZE[0]//2, CANVAS_SIZE[1]//2,
-                image=self.preview_tk
-            )
+            self.preview_canvas.create_image(CANVAS_SIZE[0]//2, CANVAS_SIZE[1]//2, image=self.preview_tk)
         except Exception as e:
             messagebox.showerror("Error en preview", str(e))
             import traceback
@@ -612,20 +555,14 @@ class TemplateGeneratorApp:
         imgs = [s for s in self.slots[:slots_count] if s is not None]
         
         if len(imgs) < slots_count:
-            messagebox.showerror("Error",
-                               f"Faltan imágenes. Necesitas {slots_count}.")
+            messagebox.showerror("Error", f"Faltan imágenes. Necesitas {slots_count}.")
             return
         
         emojis = self.default_emojis[:slots_count]
         
         try:
             out = compose_template(
-                FINAL_SIZE,
-                self.bg_img,
-                imgs,
-                emojis,
-                self.title_text.get(),
-                self.logo_img,
+                FINAL_SIZE, self.bg_img, imgs, emojis, self.title_text.get(), self.logo_img,
                 font_family=self.font_family.get(),
                 title_style=self.title_style.get(),
                 image_shape=self.image_shape.get(),
@@ -655,13 +592,12 @@ class TemplateGeneratorApp:
                 new_path = f"{base_path} ({counter}){ext}"
             
             out.save(new_path, quality=95)
-            messagebox.showinfo("✅ Éxito",
-                              f"Plantilla guardada en:\n{new_path}")
+            messagebox.showinfo("✅ Éxito", f"Plantilla guardada en:\n{new_path}")
             
             self.save_settings()
 
         except Exception as e:
-            messagebox.showerror("Error", f"Error al guardar:\n{str(e)}")
+            messagebox.showerror("Error al guardar", f"Error al guardar:\n{str(e)}")
             import traceback
             traceback.print_exc()
 

@@ -85,4 +85,35 @@ IMAGE_LAYOUTS = {
 }
 
 # Posiciones relativas (como % del tamaño total)
+
 TITLE_POSITION = {'y': 0.08}
+
+
+
+# --- Importación de Drag & Drop ---
+
+# Intentar importar tkinterdnd2 para la funcionalidad de arrastrar y soltar.
+
+# Estas constantes se usarán en la UI para habilitar o deshabilitar dicha función.
+
+HAS_TKDND = False
+
+TkinterDnD = None
+
+DND_FILES = None
+
+try:
+
+    import importlib
+
+    _tkdnd_mod = importlib.import_module("tkinterdnd2")
+
+    DND_FILES = getattr(_tkdnd_mod, "DND_FILES", None)
+
+    TkinterDnD = getattr(_tkdnd_mod, "TkinterDnD", None)
+
+    HAS_TKDND = (DND_FILES is not None and TkinterDnD is not None)
+
+except Exception:
+
+    HAS_TKDND = False

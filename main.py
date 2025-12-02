@@ -9,22 +9,16 @@ import json
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, simpledialog
 from PIL import Image, ImageTk, ImageOps
-from config import CANVAS_SIZE, FINAL_SIZE, SLOT_MAX
+from config import CANVAS_SIZE, FINAL_SIZE, SLOT_MAX, HAS_TKDND, DND_FILES, TkinterDnD
 from composer import compose_template
+from ui.batch_panel import create_batch_panel, add_batch_group, update_batch_treeview
+from ui.left_panel import create_left_panel
+from ui.center_panel import create_center_panel
+from ui.right_panel import create_right_panel
+
 
 # --- Constantes ---
 SETTINGS_FILE = "settings.json"
-
-# Intentar importar tkinterdnd2
-HAS_TKDND = False
-try:
-    import importlib
-    _tkdnd_mod = importlib.import_module("tkinterdnd2")
-    DND_FILES = getattr(_tkdnd_mod, "DND_FILES", None)
-    TkinterDnD = getattr(_tkdnd_mod, "TkinterDnD", None)
-    HAS_TKDND = (DND_FILES is not None and TkinterDnD is not None)
-except Exception:
-    HAS_TKDND = False
 
 
 class TemplateGeneratorApp:
@@ -58,6 +52,10 @@ class TemplateGeneratorApp:
         self.emoji_x_offset = tk.DoubleVar(value=0)
         self.emoji_y_offset = tk.DoubleVar(value=0)
         
+        # Variables para la edición global
+        self.apply_to_all_title = tk.IntVar(value=0)
+        self.apply_to_all_style = tk.IntVar(value=0)
+
         self.preview_tk = None
         
         # Lista para almacenar grupos de imágenes para procesamiento por lotes
@@ -147,7 +145,7 @@ class TemplateGeneratorApp:
         self._update_slot_visibility()
         self.render_preview()
         if hasattr(self, 'batch_tree'):
-            self._update_batch_treeview()
+            update_batch_treeview(self)
 
     def load_default_emojis(self):
         """Carga los emojis desde el directorio assets"""
@@ -201,422 +199,14 @@ class TemplateGeneratorApp:
         main_frame.columnconfigure(2, weight=1, minsize=320)
         main_frame.rowconfigure(0, weight=1)
         
-        self.build_left_panel(left)
-        self.build_center_panel(center)
-        self.build_right_panel(config_tab_frame)
-        self.build_batch_panel(self.batch_tab_frame) # Corrected: used self.batch_tab_frame
-
-    def build_left_panel(self, parent):
-        """Panel izquierdo: imágenes, formas y emojis"""
-        ttk.Label(parent, text="Añadir imágenes (2-4):", style='Header.TLabel').pack(pady=(0, 10), anchor=tk.W)
-        
-        slots_container_frame = ttk.Frame(parent)
-        slots_container_frame.pack(fill=tk.X, pady=5)
-        
-        slots_container_frame.columnconfigure(0, weight=1)
-        slots_container_frame.columnconfigure(1, weight=1)
-        
-        for i in range(SLOT_MAX):
-            slot_card_frame = ttk.Frame(slots_container_frame, relief=tk.RIDGE, borderwidth=1, padding=5)
-            row = i // 2 
-            col = i % 2
-            slot_card_frame.grid(row=row, column=col, sticky="nsew", padx=3, pady=3)
-            slot_card_frame.columnconfigure(0, weight=1)
-            
-            btn_img = ttk.Button(slot_card_frame, text=f"📁 Imagen {i+1}", width=12, command=lambda idx=i: self.add_image(idx))
-            btn_img.grid(row=0, column=0, sticky="ew", padx=(0,2), pady=(0,2))
-
-            rm = ttk.Button(slot_card_frame, text="❌", width=3, command=lambda idx=i: self.remove_image(idx))
-            rm.grid(row=0, column=1, sticky="e", pady=(0,2))
-            self.remove_buttons.append(rm)
-            
-            self.slot_buttons.append(btn_img)
-            
-            lbl = ttk.Label(slot_card_frame, text="", style='Info.TLabel', anchor=tk.CENTER)
-            lbl.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(0,2))
-            self.slot_labels.append(lbl)
-
-        ttk.Button(parent, text="🗑️ Limpiar Imágenes", command=self.clear_slot_images).pack(fill=tk.X, pady=5)
-        ttk.Separator(parent).pack(fill=tk.X, pady=10)
-        
-        ttk.Label(parent, text="Cantidad de imágenes:").pack(anchor=tk.W)
-        
-        slots_button_frame = ttk.Frame(parent)
-        slots_button_frame.pack(fill=tk.X, pady=5)
-        
-        row, col = 0, 0
-        for n in range(2, SLOT_MAX + 1):
-            btn = ttk.Button(slots_button_frame, text=str(n), command=lambda num=n: self._update_n_slots_and_render(num), width=10)
-            btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-            col += 1
-            if col > 2:
-                col = 0
-                row += 1
-        
-        slots_button_frame.columnconfigure(0, weight=1)
-        slots_button_frame.columnconfigure(1, weight=1)
-        slots_button_frame.columnconfigure(2, weight=1)
-
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-
-        ttk.Label(parent, text="Forma de Imágenes:", style='Header.TLabel').pack(pady=(0, 5), anchor=tk.W)
-
-        shape_button_frame = ttk.Frame(parent)
-        shape_button_frame.pack(fill=tk.X, pady=2)
-        
-        shapes = [("Cuadradas", "square"), ("Redondeadas", "rounded"), ("Círculos", "circle")]
-        row, col = 0, 0
-        for name, value in shapes:
-            btn = ttk.Button(shape_button_frame, text=name, command=lambda v=value: self.set_image_shape(v), width=10)
-            btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-            col += 1
-            if col > 2:
-                col = 0
-                row += 1
-        
-        shape_button_frame.columnconfigure(0, weight=1)
-        shape_button_frame.columnconfigure(1, weight=1)
-        shape_button_frame.columnconfigure(2, weight=1)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-        
-        ttk.Label(parent, text="Configuración de Emojis:", style='Header.TLabel').pack(pady=(0, 10))
-
-        ttk.Label(parent, text="Tamaño Emoji:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0.1, to=3.0, variable=self.emoji_size, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-
-        ttk.Label(parent, text="Posición X Emoji:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=-100, to=100, variable=self.emoji_x_offset, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-
-        ttk.Label(parent, text="Posición Y Emoji:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=-100, to=100, variable=self.emoji_y_offset, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-
-    def build_right_panel(self, parent):
-        ttk.Label(parent, text="Fondo y Logo:", style='Header.TLabel').pack(pady=(0, 10))
-        
-        ttk.Button(parent, text="🖼️ Cargar Fondo", command=self.load_bg).pack(fill=tk.X, pady=3)
-        self.bg_label = ttk.Label(parent, text="Sin fondo", style='Info.TLabel')
-        self.bg_label.pack(fill=tk.X)
-        
-        ttk.Button(parent, text="🏷️ Cargar Logo", command=self.load_logo).pack(fill=tk.X, pady=3)
-        self.logo_label = ttk.Label(parent, text="Sin logo", style='Info.TLabel')
-        self.logo_label.pack(fill=tk.X)
-        
-        ttk.Label(parent, text="Tamaño Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0.05, to=0.8, variable=self.logo_size, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-
-        ttk.Label(parent, text="Posición X Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0, to=1, variable=self.logo_x, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-
-        ttk.Label(parent, text="Posición Y Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0, to=1, variable=self.logo_y, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-        
-        ttk.Label(parent, text="Estilo de Título:", style='Header.TLabel').pack(pady=(0, 5))
-        
-        ttk.Label(parent, text="Fuente:").pack(anchor=tk.W)
-        
-        font_button_frame = ttk.Frame(parent)
-        font_button_frame.pack(fill=tk.X, pady=2)
-        
-        fonts = [
-            ("Arial Bold", "arial_bold"), ("Impact", "impact"), ("Comic Sans", "comic"),
-            ("Times", "times")
-        ]
-        
-        row, col = 0, 0
-        for name, value in fonts:
-            btn = ttk.Button(font_button_frame, text=name, command=lambda v=value: self.set_font(v), width=10)
-            btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-            col += 1
-            if col > 2:
-                col = 0
-                row += 1
-        
-        font_button_frame.columnconfigure(0, weight=1)
-        font_button_frame.columnconfigure(1, weight=1)
-        font_button_frame.columnconfigure(2, weight=1)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=10)
-        
-        ttk.Label(parent, text="Efecto:").pack(anchor=tk.W)
-
-        effect_button_frame = ttk.Frame(parent)
-        effect_button_frame.pack(fill=tk.X, pady=2)
-
-        effects = [
-            ("Simple", "simple"), ("Contorno", "contorno"),
-            ("Sombra Suave", "sombra_suave"), ("Impacto", "impacto")
-        ]
-        
-        row, col = 0, 0
-        for name, value in effects:
-            btn = ttk.Button(effect_button_frame, text=name, command=lambda v=value: self.set_title_style(v), width=10)
-            btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-            col += 1
-            if col > 2:
-                col = 0
-                row += 1
-        
-        effect_button_frame.columnconfigure(0, weight=1)
-        effect_button_frame.columnconfigure(1, weight=1)
-        effect_button_frame.columnconfigure(2, weight=1)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-        
-        ttk.Button(parent, text="🗑️ Limpiar Todo", command=self.clear_all).pack(fill=tk.X, pady=5)
-        
-        if HAS_TKDND:
-            ttk.Label(parent, text="✅ Drag & Drop activado", foreground="green").pack(pady=10)
-            try:
-                self.root.drop_target_register(DND_FILES)
-                self.root.dnd_bind('<<Drop>>', self.on_drop)
-            except:
-                pass
-
-    def build_batch_panel(self, parent):
-        """Panel para la generación por lotes"""
-        ttk.Label(parent, text="Configuración de Lotes:", style='Header.TLabel').pack(pady=(0, 10), anchor=tk.W)
-
-        add_group_frame = ttk.Frame(parent)
-        add_group_frame.pack(fill=tk.X, pady=5)
-
-        ttk.Button(add_group_frame, text="➕ Añadir Grupo de Imágenes", command=self.add_batch_group).pack(side=tk.LEFT, expand=True, fill=tk.X)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=10)
-
-        self.batch_tree = ttk.Treeview(parent, columns=("Num. Imágenes", "Rutas"), show="headings")
-        self.batch_tree.heading("Num. Imágenes", text="Imágenes")
-        self.batch_tree.heading("Rutas", text="Rutas de Archivo")
-        self.batch_tree.column("Num. Imágenes", width=100, anchor=tk.CENTER)
-        self.batch_tree.column("Rutas", width=250, anchor=tk.W)
-        self.batch_tree.pack(fill=tk.BOTH, expand=True)
-
-        tree_scroll = ttk.Scrollbar(parent, orient="vertical", command=self.batch_tree.yview)
-        tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
-        self.batch_tree.configure(yscrollcommand=tree_scroll.set)
-
-        group_buttons_frame = ttk.Frame(parent)
-        group_buttons_frame.pack(fill=tk.X, pady=5)
-
-        ttk.Button(group_buttons_frame, text="🗑️ Eliminar Grupo", command=self.remove_batch_group).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 5))
-        ttk.Button(group_buttons_frame, text="▶️ Iniciar Lote", command=self.start_batch_processing).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(5, 0))
-
-    def add_batch_group(self, paths=None):
-        """Permite al usuario añadir un grupo de imágenes para procesamiento por lotes."""
-        if paths is None:
-            paths = filedialog.askopenfilenames(
-                title="Selecciona 2, 3 o 4 imágenes para el grupo",
-                filetypes=[("Imágenes", "*.png *.jpg *.jpeg *.webp *.bmp"), ("Todos", "*.*")]
-            )
-        if not paths:
-            return
-        
-        num_images = len(paths)
-        if num_images not in [2, 3, 4]:
-            messagebox.showwarning("Cantidad Incorrecta", "Por favor, selecciona 2, 3 o 4 imágenes por grupo.")
-            return
-
-        self.batch_groups.append({"count": num_images, "paths": list(paths)})
-        self._update_batch_treeview()
-
-    def remove_batch_group(self):
-        """Elimina el grupo seleccionado del Treeview."""
-        selected_item = self.batch_tree.selection()
-        if not selected_item:
-            messagebox.showwarning("Ningún Grupo Seleccionado", "Por favor, selecciona un grupo para eliminar.")
-            return
-
-        index = self.batch_tree.index(selected_item[0])
-        del self.batch_groups[index]
-        self._update_batch_treeview()
-
-    def _update_batch_treeview(self):
-        """Actualiza la visualización de los grupos en el Treeview."""
-        if not hasattr(self, 'batch_tree'):
-            return
-        for iid in self.batch_tree.get_children():
-            self.batch_tree.delete(iid)
-
-        for i, group in enumerate(self.batch_groups):
-            display_paths = [os.path.basename(p) for p in group["paths"]]
-            paths_str = ", ".join(display_paths[:2])
-            if len(display_paths) > 2:
-                paths_str += f", ... ({len(display_paths) - 2} más)"
-            
-            self.batch_tree.insert("", "end", iid=str(i), values=(group["count"], paths_str))
-
-    def start_batch_processing(self):
-        """Inicia el procesamiento de todos los grupos."""
-        if not self.batch_groups:
-            messagebox.showwarning("Sin Grupos", "No hay grupos de imágenes para procesar.")
-            return
-
-        output_dir = filedialog.askdirectory(title="Selecciona la carpeta de destino para las imágenes generadas")
-        if not output_dir:
-            return
-
-        self.save_settings() 
-
-        try:
-            for i, group in enumerate(self.batch_groups):
-                num_images_in_group = group["count"]
-                image_paths = group["paths"]
-
-                for slot_idx in range(SLOT_MAX):
-                    if slot_idx < num_images_in_group:
-                        try:
-                            self.slots[slot_idx] = Image.open(image_paths[slot_idx]).convert("RGBA")
-                        except Exception as e:
-                            print(f"Error al cargar imagen del lote {image_paths[slot_idx]}: {e}")
-                            self.slots[slot_idx] = None
-                    else:
-                        self.slots[slot_idx] = None
-                
-                self.n_slots = num_images_in_group
-
-                generated_image = compose_template(
-                    FINAL_SIZE, self.bg_img, 
-                    [s for s in self.slots[:self.n_slots] if s is not None],
-                    self.default_emojis[:self.n_slots],
-                    self.title_text.get(), self.logo_img,
-                    font_family=self.font_family.get(),
-                    title_style=self.title_style.get(),
-                    image_shape=self.image_shape.get(),
-                    logo_size=self.logo_size.get(),
-                    logo_x=self.logo_x.get(),
-                    logo_y=self.logo_y.get(),
-                    num_slots=self.n_slots,
-                    emoji_size=self.emoji_size.get(),
-                    emoji_x_offset=self.emoji_x_offset.get(),
-                    emoji_y_offset=self.emoji_y_offset.get()
-                )
-                
-                output_filename = os.path.join(output_dir, f"plantilla_lote_{i+1}.png")
-                generated_image.save(output_filename, quality=95)
-            
-            messagebox.showinfo("Procesamiento de Lotes Completado", 
-                                "Todas las imágenes del lote han sido generadas y guardadas.")
-
-        except Exception as e:
-            messagebox.showerror("Error en Lote", f"Ocurrió un error durante el procesamiento por lotes:\n{str(e)}")
-        finally:
-            self._update_slot_visibility()
-            self.render_preview()
+        create_left_panel(left, self)
+        create_center_panel(center, self)
+        create_right_panel(config_tab_frame, self)
+        create_batch_panel(self.batch_tab_frame, self)
 
     def set_image_shape(self, shape_name):
         self.image_shape.set(shape_name)
         self.render_preview()
-
-    def build_center_panel(self, parent):
-        canvas_frame = ttk.Frame(parent)
-        canvas_frame.pack(pady=10)
-        
-        self.preview_canvas = tk.Canvas(canvas_frame, width=CANVAS_SIZE[0], height=CANVAS_SIZE[1], bg="#12121a", highlightthickness=2, highlightbackground="#444")
-        self.preview_canvas.pack()
-        
-        title_frame = ttk.Frame(parent)
-        title_frame.pack(fill=tk.X, pady=10)
-        
-        ttk.Label(title_frame, text="Título:", style='Header.TLabel').pack(anchor=tk.W)
-        self.title_entry = ttk.Entry(title_frame, textvariable=self.title_text, font=('Arial', 12))
-        self.title_entry.pack(fill=tk.X, pady=5)
-        self.title_entry.bind("<KeyRelease>", lambda e: self.render_preview())
-        
-        btn_frame = ttk.Frame(parent)
-        btn_frame.pack(pady=10)
-        
-        ttk.Button(btn_frame, text="💾 Guardar Plantilla", command=self.generate_and_save).pack(side=tk.LEFT, padx=5)
-        ttk.Button(btn_frame, text="🔄 Actualizar Vista", command=self.render_preview).pack(side=tk.LEFT, padx=5)
-
-    def build_right_panel(self, parent):
-        ttk.Label(parent, text="Fondo y Logo:", style='Header.TLabel').pack(pady=(0, 10))
-        
-        ttk.Button(parent, text="🖼️ Cargar Fondo", command=self.load_bg).pack(fill=tk.X, pady=3)
-        self.bg_label = ttk.Label(parent, text="Sin fondo", style='Info.TLabel')
-        self.bg_label.pack(fill=tk.X)
-        
-        ttk.Button(parent, text="🏷️ Cargar Logo", command=self.load_logo).pack(fill=tk.X, pady=3)
-        self.logo_label = ttk.Label(parent, text="Sin logo", style='Info.TLabel')
-        self.logo_label.pack(fill=tk.X)
-        
-        ttk.Label(parent, text="Tamaño Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0.05, to=0.8, variable=self.logo_size, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-
-        ttk.Label(parent, text="Posición X Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0, to=1, variable=self.logo_x, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-
-        ttk.Label(parent, text="Posición Y Logo:").pack(anchor=tk.W, pady=(10, 0))
-        ttk.Scale(parent, from_=0, to=1, variable=self.logo_y, command=lambda e: self.render_preview()).pack(fill=tk.X, padx=5)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-        
-        ttk.Label(parent, text="Estilo de Título:", style='Header.TLabel').pack(pady=(0, 5))
-        
-        ttk.Label(parent, text="Fuente:").pack(anchor=tk.W)
-        
-        font_button_frame = ttk.Frame(parent)
-        font_button_frame.pack(fill=tk.X, pady=2)
-        
-        fonts = [
-            ("Arial Bold", "arial_bold"), ("Impact", "impact"), ("Comic Sans", "comic"),
-            ("Times", "times")
-        ]
-        
-        row, col = 0, 0
-        for name, value in fonts:
-            btn = ttk.Button(font_button_frame, text=name, command=lambda v=value: self.set_font(v), width=10)
-            btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-            col += 1
-            if col > 2:
-                col = 0
-                row += 1
-        
-        font_button_frame.columnconfigure(0, weight=1)
-        font_button_frame.columnconfigure(1, weight=1)
-        font_button_frame.columnconfigure(2, weight=1)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=10)
-        
-        ttk.Label(parent, text="Efecto:").pack(anchor=tk.W)
-
-        effect_button_frame = ttk.Frame(parent)
-        effect_button_frame.pack(fill=tk.X, pady=2)
-
-        effects = [
-            ("Simple", "simple"), ("Contorno", "contorno"),
-            ("Sombra Suave", "sombra_suave"), ("Impacto", "impacto")
-        ]
-        
-        row, col = 0, 0
-        for name, value in effects:
-            btn = ttk.Button(effect_button_frame, text=name, command=lambda v=value: self.set_title_style(v), width=10)
-            btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-            col += 1
-            if col > 2:
-                col = 0
-                row += 1
-        
-        effect_button_frame.columnconfigure(0, weight=1)
-        effect_button_frame.columnconfigure(1, weight=1)
-        effect_button_frame.columnconfigure(2, weight=1)
-        
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-        ttk.Separator(parent).pack(fill=tk.X, pady=15)
-        
-        ttk.Button(parent, text="🗑️ Limpiar Todo", command=self.clear_all).pack(fill=tk.X, pady=5)
-        
-        if HAS_TKDND:
-            ttk.Label(parent, text="✅ Drag & Drop activado", foreground="green").pack(pady=10)
-            try:
-                self.root.drop_target_register(DND_FILES)
-                self.root.dnd_bind('<<Drop>>', self.on_drop)
-            except:
-                pass
 
     def set_font(self, font_name):
         self.font_family.set(font_name)
@@ -625,6 +215,23 @@ class TemplateGeneratorApp:
     def set_title_style(self, style_name):
         self.title_style.set(style_name)
         self.render_preview()
+
+    def on_style_change(self, style_name):
+        """Se llama cuando el estilo del título cambia."""
+        self.set_title_style(style_name)
+        if self.apply_to_all_style.get():
+            for group in self.batch_groups:
+                group["title_style"] = style_name
+            messagebox.showinfo("Actualización Global", f"El estilo '{style_name}' se ha aplicado a todos los grupos del lote.")
+
+    def on_title_change(self):
+        """Se llama cuando el texto del título cambia."""
+        self.render_preview()
+        if self.apply_to_all_title.get():
+            new_title = self.title_text.get()
+            for group in self.batch_groups:
+                group["title_text"] = new_title
+            update_batch_treeview(self)
 
     def _update_n_slots_and_render(self, new_n_slots):
         self.n_slots = new_n_slots
@@ -731,25 +338,33 @@ class TemplateGeneratorApp:
     def on_drop(self, event):
         paths = self.root.splitlist(event.data)
         
-        # Determinar si el drop ocurrió sobre la pestaña de lotes
+        # --- Lógica de Detección por Coordenadas ---
         is_drop_on_batch_tab = False
-        target_widget = event.widget
-        # Recorrer la jerarquía de widgets para ver si batch_tab_frame o batch_tree es un ancestro
-        while target_widget is not None:
-            if target_widget == self.batch_tab_frame or target_widget == self.batch_tree:
+        try:
+            # Forzar la actualización de la geometría de los widgets
+            self.batch_tab_frame.update_idletasks()
+            
+            # Coordenadas del drop
+            x_drop, y_drop = event.x_root, event.y_root
+            
+            # Geometría del área de la pestaña de lotes
+            x_tab = self.batch_tab_frame.winfo_rootx()
+            y_tab = self.batch_tab_frame.winfo_rooty()
+            width_tab = self.batch_tab_frame.winfo_width()
+            height_tab = self.batch_tab_frame.winfo_height()
+
+            # Comprobar si el drop ocurrió dentro de los límites de la pestaña
+            if (x_tab <= x_drop <= x_tab + width_tab and
+                y_tab <= y_drop <= y_tab + height_tab):
                 is_drop_on_batch_tab = True
-                break
-            # Obtener el widget padre de forma segura
-            if hasattr(target_widget, 'master'):
-                target_widget = target_widget.master
-            else:
-                target_widget = None # No hay más padres
-        
+        except Exception as e:
+            print(f"Error detectando el target del drop: {e}")
+            is_drop_on_batch_tab = False # Volver a un estado seguro
 
         if is_drop_on_batch_tab:
             num_dropped_images = len(paths)
             if num_dropped_images in [2, 3, 4]:
-                self.add_batch_group(paths=paths)
+                add_batch_group(self, paths=paths)
                 # Cambiar a la pestaña de lotes si no está ya seleccionada
                 self.notebook.select(self.batch_tab_frame)
             else:

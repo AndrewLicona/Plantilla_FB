@@ -4,7 +4,7 @@ Módulo para la construcción del panel central de vista previa.
 """
 import tkinter as tk
 from tkinter import ttk
-from config import CANVAS_SIZE
+from src.config import CANVAS_SIZE
 
 def create_center_panel(parent, app):
     """Crea los widgets para el panel central y los añade al frame padre."""

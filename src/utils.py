@@ -7,7 +7,7 @@ import os
 import sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
-from config import FONT_FILENAMES, FONT_SCALING_FACTORS
+from src.config import FONT_FILENAMES, FONT_SCALING_FACTORS
 
 
 def resource_path(relative):

@@ -4,11 +4,11 @@ Lógica principal para componer las plantillas
 """
 
 from PIL import Image, ImageDraw, ImageFilter
-from config import (
+from src.config import (
     DEFAULT_BG_COLOR, IMAGE_LAYOUTS, TITLE_POSITION, 
     TITLE_COLOR, TITLE_STYLES, FONT_SCALING_FACTORS
 )
-from utils import (
+from src.utils import (
     apply_cover_background, draw_text_with_style,
     apply_shape_to_image, paste_with_shadow, load_font
 )

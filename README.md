@@ -7,11 +7,20 @@ Aplicación mejorada para crear plantillas personalizadas con layouts adaptativo
 ```
 proyecto/
 │
-├── main.py          # Interfaz gráfica principal (ejecutar este)
-├── config.py        # Configuración (tamaños, colores, layouts)
-├── utils.py         # Funciones de utilidad (fuentes, formas, sombras)
-├── composer.py      # Lógica de composición de plantillas
-└── README.md        # Esta documentación
+├── src/                 # Código fuente de la aplicación
+│   ├── __init__.py      # Marca el directorio 'src' como un paquete Python
+│   ├── main.py          # Interfaz gráfica principal (ejecutar este)
+│   ├── config.py        # Configuración (tamaños, colores, layouts)
+│   ├── utils.py         # Funciones de utilidad (fuentes, formas, sombras)
+│   ├── composer.py      # Lógica de composición de plantillas
+│   └── ui/              # Módulos de la interfaz de usuario
+│       ├── __init__.py  # Marca 'ui' como un subpaquete
+│       ├── batch_panel.py
+│       ├── center_panel.py
+│       ├── left_panel.py
+│       └── right_panel.py
+│
+└── README.md            # Esta documentación
 ```
 
 ## 🚀 Instalación
@@ -26,8 +35,10 @@ pip install tkinterdnd2
 
 ## ▶️ Ejecutar
 
+Para ejecutar la aplicación, asegúrate de estar en el directorio raíz del proyecto y usa el siguiente comando:
+
 ```bash
-python main.py
+python -m src.main
 ```
 
 ## ✨ Características Nuevas
@@ -66,6 +77,7 @@ python main.py
 - ✔️ `textsize` reemplazado por `textbbox` (compatible con Pillow moderno)
 - ✔️ Import de `simpledialog` agregado
 - ✔️ Mejor manejo de errores
+- ✔️ Nombres de archivo únicos para el procesamiento por lotes (usando marcas de tiempo para evitar sobrescritura).
 
 ### ✅ Mejoras Visuales
 - ✔️ Imágenes sin círculo forzado (formas personalizables)

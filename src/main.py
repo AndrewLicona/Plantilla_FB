@@ -9,12 +9,12 @@ import json
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, simpledialog
 from PIL import Image, ImageTk, ImageOps
-from config import CANVAS_SIZE, FINAL_SIZE, SLOT_MAX, HAS_TKDND, DND_FILES, TkinterDnD
-from composer import compose_template
-from ui.batch_panel import create_batch_panel, add_batch_group, update_batch_treeview
-from ui.left_panel import create_left_panel
-from ui.center_panel import create_center_panel
-from ui.right_panel import create_right_panel
+from src.config import CANVAS_SIZE, FINAL_SIZE, SLOT_MAX, HAS_TKDND, DND_FILES, TkinterDnD
+from src.composer import compose_template
+from src.ui.batch_panel import create_batch_panel, add_batch_group, update_batch_treeview
+from src.ui.left_panel import create_left_panel
+from src.ui.center_panel import create_center_panel
+from src.ui.right_panel import create_right_panel
 
 
 # --- Constantes ---
@@ -29,7 +29,7 @@ class TemplateGeneratorApp:
         
         # Estado
         self.slots = [None] * SLOT_MAX
-        self.default_emojis = self.load_default_emojis()
+        self.current_emojis = []
         self.n_slots = 3
         self.bg_img = None
         self.logo_img = None
@@ -48,6 +48,7 @@ class TemplateGeneratorApp:
         self.logo_size = tk.DoubleVar(value=0.20)
         self.logo_x = tk.DoubleVar(value=0.50)
         self.logo_y = tk.DoubleVar(value=0.50)
+        self.emoji_pack = tk.StringVar(value="default")
         self.emoji_size = tk.DoubleVar(value=1.0)
         self.emoji_x_offset = tk.DoubleVar(value=0)
         self.emoji_y_offset = tk.DoubleVar(value=0)
@@ -91,6 +92,7 @@ class TemplateGeneratorApp:
             "logo_size": self.logo_size.get(),
             "logo_x": self.logo_x.get(),
             "logo_y": self.logo_y.get(),
+            "emoji_pack": self.emoji_pack.get(),
             "emoji_size": self.emoji_size.get(),
             "emoji_x_offset": self.emoji_x_offset.get(),
             "emoji_y_offset": self.emoji_y_offset.get(),
@@ -120,6 +122,7 @@ class TemplateGeneratorApp:
             self.logo_size.set(settings.get("logo_size", self.logo_size.get()))
             self.logo_x.set(settings.get("logo_x", self.logo_x.get()))
             self.logo_y.set(settings.get("logo_y", self.logo_y.get()))
+            self.emoji_pack.set(settings.get("emoji_pack", self.emoji_pack.get()))
             self.emoji_size.set(settings.get("emoji_size", self.emoji_size.get()))
             self.emoji_x_offset.set(settings.get("emoji_x_offset", self.emoji_x_offset.get()))
             self.emoji_y_offset.set(settings.get("emoji_y_offset", self.emoji_y_offset.get()))
@@ -142,28 +145,57 @@ class TemplateGeneratorApp:
             
     def _load_initial_state(self):
         """Carga el estado inicial de la UI después de que todos los widgets estén construidos."""
+        self.update_emoji_packs()
+        self.load_current_emojis()
         self._update_slot_visibility()
         self.render_preview()
         if hasattr(self, 'batch_tree'):
             update_batch_treeview(self)
 
-    def load_default_emojis(self):
-        """Carga los emojis desde el directorio assets"""
-        emojis = []
-        assets_path = "assets"
-        if not os.path.exists(assets_path):
-            return []
+    def update_emoji_packs(self):
+        """Escanea el directorio de emojis y actualiza el selector de paquetes."""
+        packs_path = "assets/emojis"
+        if not os.path.exists(packs_path):
+            self.emoji_pack_selector['values'] = ["default"]
+            return
+
+        try:
+            packs = [d for d in os.listdir(packs_path) if os.path.isdir(os.path.join(packs_path, d))]
+            if not packs:
+                packs = ["default"]
             
-        emoji_files = sorted([f for f in os.listdir(assets_path) if f.startswith("fc_reaccion") and f.endswith(".png")])
+            self.emoji_pack_selector['values'] = packs
+            if self.emoji_pack.get() not in packs:
+                self.emoji_pack.set(packs[0])
+        except Exception as e:
+            print(f"Error al buscar paquetes de emojis: {e}")
+            self.emoji_pack_selector['values'] = ["default"]
+
+
+    def load_current_emojis(self):
+        """Carga los emojis del paquete actualmente seleccionado."""
+        pack_name = self.emoji_pack.get()
+        emojis_path = os.path.join("assets/emojis", pack_name)
+        self.current_emojis = []
+
+        if not os.path.exists(emojis_path):
+            print(f"Advertencia: No se encontró el paquete de emojis '{pack_name}'")
+            return
+            
+        emoji_files = sorted([f for f in os.listdir(emojis_path) if f.endswith(".png")])
         
         for filename in emoji_files:
             try:
-                path = os.path.join(assets_path, filename)
+                path = os.path.join(emojis_path, filename)
                 emoji_img = Image.open(path).convert("RGBA")
-                emojis.append(emoji_img)
+                self.current_emojis.append(emoji_img)
             except Exception as e:
-                print(f"Error al cargar emoji {filename}: {e}")
-        return emojis
+                print(f"Error al cargar emoji {filename} del paquete {pack_name}: {e}")
+
+    def on_emoji_pack_change(self, event=None):
+        """Se llama cuando el paquete de emojis cambia."""
+        self.load_current_emojis()
+        self.render_preview()
 
     def setup_styles(self):
         """Configura el tema visual"""
@@ -391,7 +423,7 @@ class TemplateGeneratorApp:
             while len(imgs) < slots_count:
                 placeholder = Image.new("RGBA", (300, 300), (80, 80, 90, 255))
                 from PIL import ImageDraw
-                from utils import load_font
+                from src.utils import load_font
                 draw = ImageDraw.Draw(placeholder)
                 fnt = load_font('arial_bold', 120)
                 bbox = draw.textbbox((0, 0), "?", font=fnt)
@@ -400,7 +432,7 @@ class TemplateGeneratorApp:
                 draw.text((150 - tw//2, 150 - th//2), "?", fill=(200, 200, 200), font=fnt)
                 imgs.append(placeholder)
             
-            emojis = self.default_emojis[:slots_count]
+            emojis = self.current_emojis[:slots_count]
             
             preview = compose_template(
                 CANVAS_SIZE, self.bg_img, imgs, emojis, self.title_text.get(), self.logo_img,
@@ -433,7 +465,7 @@ class TemplateGeneratorApp:
             messagebox.showerror("Error", f"Faltan imágenes. Necesitas {slots_count}.")
             return
         
-        emojis = self.default_emojis[:slots_count]
+        emojis = self.current_emojis[:slots_count]
         
         try:
             out = compose_template(

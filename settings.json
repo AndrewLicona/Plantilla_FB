@@ -1,16 +1,336 @@
 {
-    "title_text": "\u00a1VOTA POR TU CRACK!",
+    "title_text": "\u00a1Decidan!",
     "font_family": "impact",
     "title_style": "sombra_suave",
     "image_shape": "square",
-    "logo_size": 0.13762886597938145,
+    "logo_size": 0.1323170731707317,
     "logo_x": 0.48109965635738833,
     "logo_y": 0.8910505836575876,
-    "emoji_size": 0.6676156583629893,
-    "emoji_x_offset": -30.960854092526688,
-    "emoji_y_offset": 30.2491103202847,
-    "n_slots": 2,
-    "bg_img_path": "C:/Users/Usuario/Documents/ENCUESTAS/BG/fc-mobile-community-background-image.webp",
+    "emoji_pack": "default",
+    "emoji_size": 0.6188073394495412,
+    "emoji_x_offset": -30.09708737864078,
+    "emoji_y_offset": 14.5631067961165,
+    "n_slots": 4,
+    "bg_img_path": "C:/Users/Usuario/Documents/ENCUESTAS/BG/\ud83e\udd11 \u00a1SOBRES CHETADOS con JOYAS! Recompensas INCRE\u00cdBLES de FRAGMENTOS  FC Mobile.png",
     "logo_img_path": "C:/Users/Usuario/Documents/AJDREW GAMEPLAY/LOGO/LOGO AJDREW GAMEPLAYS (1).png",
-    "batch_groups": []
+    "batch_groups": [
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/van Dijk_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Kompany_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/van Dijk_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Stam_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Hazard_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Pir\u00e8s_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Best_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Hazard_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Best_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Downloads/van Dijk_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Stam_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Kompany_fc25_download.png",
+                "C:/Users/Usuario/Downloads/King_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Drogba_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Rush_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Keane_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Casemiro_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/James_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Calafiori_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Gu\u00e9hi_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Tarkowski_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Maguire_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Romero_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6188073394495412,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Calafiori_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Mu\u00f1oz_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Casemiro_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Henderson_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Sarr_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Best_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Pir\u00e8s_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Mount_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Dempsey_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Sarr_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Downloads/James_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Mu\u00f1oz_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Downloads/Crouch_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Bowen_fc25_download.png",
+                "C:/Users/Usuario/Downloads/Wood_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5655963302752294,
+            "emoji_x_offset": -30.275229357798167,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rijkaard_fc25_download (3).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Tour\u00e9_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Keane_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/King_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Cannavaro_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Stam_fc25_download (3).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Kompany_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Alexander-Arnold_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Mu\u00f1oz_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/James_fc25_download.png"
+            ],
+            "title_text": "\u00a1Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.5223300970873787,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        }
+    ]
 }

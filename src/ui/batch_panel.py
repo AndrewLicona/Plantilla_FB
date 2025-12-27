@@ -6,8 +6,9 @@ import os
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from PIL import Image
-from composer import compose_template
-from config import FINAL_SIZE, SLOT_MAX
+from datetime import datetime
+from src.composer import compose_template
+from src.config import FINAL_SIZE, SLOT_MAX
 
 def on_batch_group_select(event, app):
     """
@@ -112,10 +113,19 @@ def create_batch_panel(parent, app):
     # Frame para botones de edición y acción
     action_buttons_frame = ttk.Frame(parent)
     action_buttons_frame.pack(fill=tk.X, pady=5)
+    action_buttons_frame.columnconfigure(0, weight=1)
+    action_buttons_frame.columnconfigure(1, weight=1)
 
-    ttk.Button(action_buttons_frame, text="💾 Guardar Cambios en Grupo", command=lambda: save_changes_to_group(app)).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 5))
-    ttk.Button(action_buttons_frame, text="🗑️ Eliminar Grupo", command=lambda: remove_batch_group(app)).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 5))
+    edit_buttons_frame = ttk.Frame(action_buttons_frame)
+    edit_buttons_frame.grid(row=0, column=0, sticky="ew", padx=(0, 5))
+    edit_buttons_frame.columnconfigure(0, weight=1)
+    edit_buttons_frame.columnconfigure(1, weight=1)
     
+    ttk.Button(edit_buttons_frame, text="💾 Guardar Cambios", command=lambda: save_changes_to_group(app)).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 5))
+    ttk.Button(edit_buttons_frame, text="🗑️ Eliminar Grupo", command=lambda: remove_batch_group(app)).pack(side=tk.LEFT, expand=True, fill=tk.X)
+
+    ttk.Button(action_buttons_frame, text="💥 Limpiar Lotes", command=lambda: clear_all_batch_groups(app)).grid(row=0, column=1, sticky="ew", padx=(5, 0))
+
     ttk.Button(parent, text="▶️ Iniciar Lote", command=lambda: start_batch_processing(app)).pack(fill=tk.X, pady=(5,0))
 
 
@@ -172,8 +182,22 @@ def remove_batch_group(app):
         del app.batch_groups[index]
         update_batch_treeview(app)
         messagebox.showinfo("Grupo Eliminado", "El grupo ha sido eliminado correctamente.")
-    else:
-        messagebox.showinfo("Cancelado", "La eliminación del grupo ha sido cancelada.")
+
+def clear_all_batch_groups(app):
+    """Elimina todos los grupos de la lista de lotes."""
+    if not app.batch_groups:
+        messagebox.showinfo("Lista Vacía", "No hay lotes que limpiar.")
+        return
+        
+    confirm = messagebox.askyesno(
+        "Confirmar Limpieza Total",
+        "¿Estás seguro de que quieres eliminar TODOS los lotes de la lista?\nEsta acción no se puede deshacer."
+    )
+    
+    if confirm:
+        app.batch_groups.clear()
+        update_batch_treeview(app)
+        messagebox.showinfo("Lotes Eliminados", "Se han eliminado todos los lotes de la lista.")
 
 
 def update_batch_treeview(app):
@@ -192,6 +216,9 @@ def update_batch_treeview(app):
         title = group.get("title_text", "")
         app.batch_tree.insert("", "end", iid=str(i), values=(group["count"], title, paths_str))
 
+    # Forzar la actualización de la UI para asegurar que los cambios se muestren
+    app.batch_tree.update_idletasks()
+
 
 def start_batch_processing(app):
     """Inicia el procesamiento de todos los grupos."""
@@ -206,6 +233,9 @@ def start_batch_processing(app):
     app.save_settings() 
 
     try:
+        # Generar un timestamp único para este lote
+        timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+
         for i, group in enumerate(app.batch_groups):
             num_images_in_group = group["count"]
             image_paths = group["paths"]
@@ -222,7 +252,7 @@ def start_batch_processing(app):
             generated_image = compose_template(
                 FINAL_SIZE, app.bg_img, 
                 [s for s in current_slots if s is not None],
-                app.default_emojis[:num_images_in_group],
+                app.current_emojis[:num_images_in_group],
                 group.get("title_text", app.title_text.get()), 
                 app.logo_img,
                 font_family=group.get("font_family", app.font_family.get()),
@@ -237,7 +267,7 @@ def start_batch_processing(app):
                 emoji_y_offset=group.get("emoji_y_offset", app.emoji_y_offset.get())
             )
             
-            output_filename = os.path.join(output_dir, f"plantilla_lote_{i+1}.png")
+            output_filename = os.path.join(output_dir, f"plantilla_lote_{timestamp}_{i+1}.png")
             generated_image.save(output_filename, quality=95)
         
         messagebox.showinfo("Procesamiento de Lotes Completado", 

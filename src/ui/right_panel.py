@@ -4,7 +4,7 @@ Módulo para la construcción del panel derecho de configuración avanzada.
 """
 import tkinter as tk
 from tkinter import ttk
-from config import HAS_TKDND, DND_FILES
+from src.config import HAS_TKDND, DND_FILES
 
 def create_right_panel(parent, app):
     """Crea los widgets para el panel derecho y los añade al frame padre."""
@@ -91,8 +91,7 @@ def create_right_panel(parent, app):
     
     if HAS_TKDND:
         ttk.Label(parent, text="✅ Drag & Drop activado", foreground="green").pack(pady=10)
-        try:
-            app.root.drop_target_register(DND_FILES)
-            app.root.dnd_bind('<<Drop>>', app.on_drop)
-        except:
-            pass
+        # El bloque try-except se elimina para permitir que los errores de DND aparezcan
+        # y poder depurarlos, en lugar de que fallen silenciosamente.
+        app.root.drop_target_register(DND_FILES)
+        app.root.dnd_bind('<<Drop>>', app.on_drop)

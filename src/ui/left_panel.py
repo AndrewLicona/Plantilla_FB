@@ -4,7 +4,7 @@ Módulo para la construcción del panel izquierdo.
 """
 import tkinter as tk
 from tkinter import ttk
-from config import SLOT_MAX
+from src.config import SLOT_MAX
 
 def create_left_panel(parent, app):
     """Crea los widgets para el panel izquierdo y los añade al frame padre."""
@@ -82,6 +82,12 @@ def create_left_panel(parent, app):
     ttk.Separator(parent).pack(fill=tk.X, pady=15)
     
     ttk.Label(parent, text="Configuración de Emojis:", style='Header.TLabel').pack(pady=(0, 10))
+
+    # Selector de Paquete de Emojis
+    ttk.Label(parent, text="Paquete de Emojis:").pack(anchor=tk.W)
+    app.emoji_pack_selector = ttk.Combobox(parent, textvariable=app.emoji_pack, state="readonly")
+    app.emoji_pack_selector.pack(fill=tk.X, padx=5, pady=(0, 10))
+    app.emoji_pack_selector.bind("<<ComboboxSelected>>", app.on_emoji_pack_change)
 
     ttk.Label(parent, text="Tamaño Emoji:").pack(anchor=tk.W, pady=(10, 0))
     ttk.Scale(parent, from_=0.1, to=3.0, variable=app.emoji_size, command=lambda e: app.render_preview()).pack(fill=tk.X, padx=5)

@@ -1,5 +1,5 @@
 {
-    "title_text": "\u00a1Decidan!",
+    "title_text": "¡Decidan!",
     "font_family": "impact",
     "title_style": "sombra_suave",
     "image_shape": "square",
@@ -7,328 +7,447 @@
     "logo_x": 0.48109965635738833,
     "logo_y": 0.8910505836575876,
     "emoji_pack": "default",
-    "emoji_size": 0.6188073394495412,
+    "emoji_size": 0.6454128440366972,
     "emoji_x_offset": -30.09708737864078,
     "emoji_y_offset": 14.5631067961165,
     "n_slots": 4,
-    "bg_img_path": "C:/Users/Usuario/Documents/ENCUESTAS/BG/\ud83e\udd11 \u00a1SOBRES CHETADOS con JOYAS! Recompensas INCRE\u00cdBLES de FRAGMENTOS  FC Mobile.png",
+    "bg_img_path": "C:/Users/Usuario/Documents/ENCUESTAS/BG/Capa 1 (2).png",
     "logo_img_path": "C:/Users/Usuario/Documents/AJDREW GAMEPLAY/LOGO/LOGO AJDREW GAMEPLAYS (1).png",
     "batch_groups": [
         {
-            "count": 2,
+            "count": 3,
             "paths": [
-                "C:/Users/Usuario/Downloads/van Dijk_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Kompany_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Eto'o_fc25_download (1).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Giuly_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Al Owairan_fc25_download (2).png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
-            "emoji_x_offset": -30.09708737864078,
-            "emoji_y_offset": 14.5631067961165
-        },
-        {
-            "count": 2,
-            "paths": [
-                "C:/Users/Usuario/Downloads/van Dijk_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Stam_fc25_download.png"
-            ],
-            "title_text": "\u00a1Decidan!",
-            "font_family": "impact",
-            "title_style": "sombra_suave",
-            "image_shape": "square",
-            "logo_size": 0.1323170731707317,
-            "logo_x": 0.48109965635738833,
-            "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 3,
             "paths": [
-                "C:/Users/Usuario/Downloads/Hazard_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Pir\u00e8s_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Best_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Nico Paz_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Palmer_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Musiala_fc25_download (2).png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
-            "emoji_x_offset": -30.09708737864078,
-            "emoji_y_offset": 14.5631067961165
-        },
-        {
-            "count": 2,
-            "paths": [
-                "C:/Users/Usuario/Downloads/Hazard_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Best_fc25_download.png"
-            ],
-            "title_text": "\u00a1Decidan!",
-            "font_family": "impact",
-            "title_style": "sombra_suave",
-            "image_shape": "square",
-            "logo_size": 0.1323170731707317,
-            "logo_x": 0.48109965635738833,
-            "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 4,
             "paths": [
-                "C:/Users/Usuario/Downloads/van Dijk_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Stam_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Kompany_fc25_download.png",
-                "C:/Users/Usuario/Downloads/King_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Musiala_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Nico Paz_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Bellingham_fc25_download (4).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Palmer_fc25_download (2).png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Caicedo_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Kimmich_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/João Neves_fc25_download.png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 2,
             "paths": [
-                "C:/Users/Usuario/Downloads/Drogba_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Rush_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Valverde_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/de Jong_fc25_download (2).png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/McTominay_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rice_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Pedri_fc25_download.png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 2,
             "paths": [
-                "C:/Users/Usuario/Downloads/Keane_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Casemiro_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rice_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Pedri_fc25_download.png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
-            "count": 2,
+            "count": 3,
             "paths": [
-                "C:/Users/Usuario/Downloads/James_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Calafiori_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Pedri_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Park Ji Sung_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rice_fc25_download (2).png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 4,
             "paths": [
-                "C:/Users/Usuario/Downloads/Gu\u00e9hi_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Tarkowski_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Maguire_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Romero_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rice_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Pedri_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/McTominay_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Park Ji Sung_fc25_download.png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.6188073394495412,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rice_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Pedri_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Vitinha_fc25_download (2).png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 2,
             "paths": [
-                "C:/Users/Usuario/Downloads/Calafiori_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Mu\u00f1oz_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Marcelo_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Cafu_fc25_download (2).png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 3,
             "paths": [
-                "C:/Users/Usuario/Downloads/Casemiro_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Henderson_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Sarr_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/de Jong_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Gravenberch_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Valverde_fc25_download (2).png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
-            "emoji_x_offset": -30.09708737864078,
-            "emoji_y_offset": 14.5631067961165
-        },
-        {
-            "count": 2,
-            "paths": [
-                "C:/Users/Usuario/Downloads/Best_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Pir\u00e8s_fc25_download.png"
-            ],
-            "title_text": "\u00a1Decidan!",
-            "font_family": "impact",
-            "title_style": "sombra_suave",
-            "image_shape": "square",
-            "logo_size": 0.1323170731707317,
-            "logo_x": 0.48109965635738833,
-            "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
-            "emoji_x_offset": -30.09708737864078,
-            "emoji_y_offset": 14.5631067961165
-        },
-        {
-            "count": 3,
-            "paths": [
-                "C:/Users/Usuario/Downloads/Mount_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Dempsey_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Sarr_fc25_download.png"
-            ],
-            "title_text": "\u00a1Decidan!",
-            "font_family": "impact",
-            "title_style": "sombra_suave",
-            "image_shape": "square",
-            "logo_size": 0.1323170731707317,
-            "logo_x": 0.48109965635738833,
-            "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
-            "emoji_x_offset": -30.09708737864078,
-            "emoji_y_offset": 14.5631067961165
-        },
-        {
-            "count": 2,
-            "paths": [
-                "C:/Users/Usuario/Downloads/James_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Mu\u00f1oz_fc25_download.png"
-            ],
-            "title_text": "\u00a1Decidan!",
-            "font_family": "impact",
-            "title_style": "sombra_suave",
-            "image_shape": "square",
-            "logo_size": 0.1323170731707317,
-            "logo_x": 0.48109965635738833,
-            "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
-            "emoji_x_offset": -30.09708737864078,
-            "emoji_y_offset": 14.5631067961165
-        },
-        {
-            "count": 3,
-            "paths": [
-                "C:/Users/Usuario/Downloads/Crouch_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Bowen_fc25_download.png",
-                "C:/Users/Usuario/Downloads/Wood_fc25_download.png"
-            ],
-            "title_text": "\u00a1Decidan!",
-            "font_family": "impact",
-            "title_style": "sombra_suave",
-            "image_shape": "square",
-            "logo_size": 0.1323170731707317,
-            "logo_x": 0.48109965635738833,
-            "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5655963302752294,
-            "emoji_x_offset": -30.275229357798167,
-            "emoji_y_offset": 14.5631067961165
-        },
-        {
-            "count": 3,
-            "paths": [
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rijkaard_fc25_download (3).png",
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Tour\u00e9_fc25_download.png",
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Keane_fc25_download.png"
-            ],
-            "title_text": "\u00a1Decidan!",
-            "font_family": "impact",
-            "title_style": "sombra_suave",
-            "image_shape": "square",
-            "logo_size": 0.1323170731707317,
-            "logo_x": 0.48109965635738833,
-            "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 4,
             "paths": [
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/King_fc25_download (2).png",
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Cannavaro_fc25_download (2).png",
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Stam_fc25_download (3).png",
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Kompany_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Caicedo_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Gravenberch_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Valverde_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/de Jong_fc25_download (2).png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Carles Puyol_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Ricardo Carvalho_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Maldini_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Nesta_fc25_download (2).png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Park Ji Sung_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Kuyt_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Lampard_fc25_download (3).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Pirlo_fc25_download.png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Bellingham_fc25_download (4).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Palmer_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rui Costa_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Bruno Fernandes_fc25_download (2).png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Díaz_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Olise_fc25_download.png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 2,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Vitinha_fc25_download (1).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Vitinha_fc25_download (2).png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Pedri_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Vitinha_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Pirlo_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Rice_fc25_download (2).png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         },
         {
             "count": 3,
             "paths": [
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Alexander-Arnold_fc25_download (2).png",
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Mu\u00f1oz_fc25_download (2).png",
-                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/James_fc25_download.png"
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Olise_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Eto'o_fc25_download (1).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Giuly_fc25_download.png"
             ],
-            "title_text": "\u00a1Decidan!",
+            "title_text": "¡Decidan!",
             "font_family": "impact",
             "title_style": "sombra_suave",
             "image_shape": "square",
             "logo_size": 0.1323170731707317,
             "logo_x": 0.48109965635738833,
             "logo_y": 0.8910505836575876,
-            "emoji_size": 0.5223300970873787,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Giuly_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Stoichkov_fc25_download (1).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Olise_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Eto'o_fc25_download (1).png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 3,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Giuly_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Stoichkov_fc25_download (1).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Eto'o_fc25_download (1).png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Al Owairan_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Eto'o_fc25_download (1).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Giuly_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Stoichkov_fc25_download (1).png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
+            "emoji_x_offset": -30.09708737864078,
+            "emoji_y_offset": 14.5631067961165
+        },
+        {
+            "count": 4,
+            "paths": [
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Giuly_fc25_download.png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Stoichkov_fc25_download (1).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Al Owairan_fc25_download (2).png",
+                "C:/Users/Usuario/Documents/ENCUESTAS/CARDS/Quaresma_fc25_download.png"
+            ],
+            "title_text": "¡Decidan!",
+            "font_family": "impact",
+            "title_style": "sombra_suave",
+            "image_shape": "square",
+            "logo_size": 0.1323170731707317,
+            "logo_x": 0.48109965635738833,
+            "logo_y": 0.8910505836575876,
+            "emoji_size": 0.6454128440366972,
             "emoji_x_offset": -30.09708737864078,
             "emoji_y_offset": 14.5631067961165
         }

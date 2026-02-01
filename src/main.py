@@ -3,8 +3,13 @@
 main.py
 GUI principal del generador de plantillas de reacciones
 """
-
+import sys
 import os
+
+# Add the project root to the Python path
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+
 import json
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, simpledialog
@@ -102,8 +107,8 @@ class TemplateGeneratorApp:
             "batch_groups": self.batch_groups,
         }
         try:
-            with open(SETTINGS_FILE, "w") as f:
-                json.dump(settings, f, indent=4)
+            with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+                json.dump(settings, f, indent=4, ensure_ascii=False)
         except Exception as e:
             print(f"Error guardando la configuración: {e}")
 
@@ -112,7 +117,7 @@ class TemplateGeneratorApp:
         if not os.path.exists(SETTINGS_FILE):
             return
         try:
-            with open(SETTINGS_FILE, "r") as f:
+            with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
                 settings = json.load(f)
             
             self.title_text.set(settings.get("title_text", self.title_text.get()))

@@ -121,12 +121,12 @@ def create_batch_panel(parent, app):
     edit_buttons_frame.columnconfigure(0, weight=1)
     edit_buttons_frame.columnconfigure(1, weight=1)
     
-    ttk.Button(edit_buttons_frame, text="💾 Guardar Cambios", command=lambda: save_changes_to_group(app)).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 5))
-    ttk.Button(edit_buttons_frame, text="🗑️ Eliminar Grupo", command=lambda: remove_batch_group(app)).pack(side=tk.LEFT, expand=True, fill=tk.X)
+    ttk.Button(edit_buttons_frame, text="💾Guardar", command=lambda: save_changes_to_group(app)).pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(0, 5))
+    ttk.Button(edit_buttons_frame, text="🗑️Eliminar", command=lambda: remove_batch_group(app)).pack(side=tk.LEFT, expand=True, fill=tk.X)
 
-    ttk.Button(action_buttons_frame, text="💥 Limpiar Lotes", command=lambda: clear_all_batch_groups(app)).grid(row=0, column=1, sticky="ew", padx=(5, 0))
+    ttk.Button(action_buttons_frame, text="💥Limpiar", command=lambda: clear_all_batch_groups(app)).grid(row=0, column=1, sticky="ew", padx=(5, 0))
 
-    ttk.Button(parent, text="▶️ Iniciar Lote", command=lambda: start_batch_processing(app)).pack(fill=tk.X, pady=(5,0))
+    ttk.Button(parent, text="▶️Iniciar Lote", command=lambda: start_batch_processing(app)).pack(fill=tk.X, pady=(5,0))
 
 
 def add_batch_group(app, paths=None):

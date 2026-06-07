@@ -5,6 +5,7 @@ Funciones auxiliares para procesamiento de imágenes
 
 import os
 import sys
+import tkinter as tk
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 from src.config import FONT_FILENAMES, FONT_SCALING_FACTORS
@@ -17,6 +18,24 @@ def resource_path(relative):
     except Exception:
         base = os.path.abspath(".")
     return os.path.join(base, relative)
+
+
+def get_system_fonts():
+    """Obtiene todas las fuentes disponibles en el sistema."""
+    try:
+        import tkinter.font as tkFont
+        root = tk.Tk()
+        root.withdraw()  # Ocultar la ventana temporal
+        
+        # Obtener todas las familias de fuentes
+        font_families = sorted(tkFont.families())
+        
+        root.destroy()
+        return font_families
+    except Exception as e:
+        print(f"Error obteniendo fuentes del sistema: {e}")
+        # Fallback a fuentes básicas
+        return ["Arial", "Times New Roman", "Courier New", "Verdana", "Impact", "Comic Sans MS"]
 
 
 def load_font(font_family='arial_bold', size=72, scale_factor=1.0):
@@ -118,45 +137,85 @@ def create_rounded_rectangle_mask(size, radius=20):
 
 def apply_shape_to_image(img, shape='square', size=300, radius=20):
     """Aplica diferentes formas a una imagen"""
-    # Usar ImageOps.pad para escalar y rellenar manteniendo el aspect ratio
-    img = ImageOps.pad(img.convert("RGBA"), (size, size), color=(0, 0, 0, 0))
+    # Convertir a RGBA y escalar manteniendo aspect ratio
+    img = img.convert("RGBA")
+    img = ImageOps.pad(img, (size, size), color=(255, 255, 255, 0))  # Fondo transparente blanco
     
     if shape == 'circle':
+        # Crear máscara circular
         mask = Image.new("L", (size, size), 0)
         draw = ImageDraw.Draw(mask)
         draw.ellipse((0, 0, size, size), fill=255)
-        img.putalpha(mask)
+        
+        # Crear imagen final con fondo transparente
+        result = Image.new("RGBA", (size, size), (255, 255, 255, 0))
+        result.paste(img, (0, 0), mask)
+        return result
     elif shape == 'rounded':
+        # Crear máscara redondeada
         mask = create_rounded_rectangle_mask((size, size), radius)
-        img.putalpha(mask)
+        
+        # Crear imagen final con fondo transparente
+        result = Image.new("RGBA", (size, size), (255, 255, 255, 0))
+        result.paste(img, (0, 0), mask)
+        return result
     elif shape == 'square':
         # Ya está en forma cuadrada, solo asegurar bordes limpios
-        pass
+        return img
     
     return img
 
 
-def add_shadow_to_image(base, img, position, shadow_offset=15, shadow_blur=10):
-    """Añade sombra a una imagen"""
+def add_shadow_to_image(base, img, position, shadow_offset=8, shadow_blur=12):
+    """Añade sombra mejorada y más natural a una imagen"""
     x, y = position
     size = img.size[0]
     
-    # Crear sombra
-    shadow = Image.new("RGBA", (size + 40, size + 40), (0, 0, 0, 0))
-    sdraw = ImageDraw.Draw(shadow)
+    # Calcular espacio extra para el desenfoque de la sombra
+    padding = shadow_blur + shadow_offset
+    shadow_size = size + (padding * 2)
     
-    # Forma según la imagen
+    # Crear sombra con espacio suficiente para el desenfoque
+    shadow = Image.new("RGBA", (shadow_size, shadow_size), (0, 0, 0, 0))
+    
+    # Detectar la forma de la imagen y crear sombra correspondiente
     if img.mode == 'RGBA':
-        # Detectar si es circular o cuadrada
-        sdraw.rectangle((15, 15, size + 15, size + 15), fill=(0, 0, 0, 140))
-    
-    shadow = shadow.filter(ImageFilter.GaussianBlur(shadow_blur))
-    
-    # Pegar sombra
-    base.paste(shadow, (x - 20 + shadow_offset, y + shadow_offset), shadow)
+        # Extraer el canal alfa para determinar la forma
+        alpha = img.split()[-1]
+        
+        # Crear sombra basada en la forma real de la imagen (centrada en el canvas de sombra)
+        shadow_img = Image.new("RGBA", (shadow_size, shadow_size), (0, 0, 0, 0))
+        
+        # Pegar la forma de la imagen en el centro del canvas de sombra
+        shadow_alpha = Image.new("L", (shadow_size, shadow_size), 0)
+        shadow_alpha.paste(alpha, (padding, padding))
+        
+        # Crear la sombra con la forma correcta
+        shadow_color = Image.new("RGBA", (shadow_size, shadow_size), (0, 0, 0, 80))
+        shadow_color.putalpha(shadow_alpha)
+        
+        # Aplicar desenfoque gaussiano para efecto de sombra suave
+        shadow_color = shadow_color.filter(ImageFilter.GaussianBlur(shadow_blur))
+        
+        # Calcular posición para centrar la sombra respecto a la imagen
+        shadow_x = x - padding
+        shadow_y = y - padding
+        
+        # Pegar sombra
+        base.paste(shadow_color, (shadow_x, shadow_y), shadow_color)
+    else:
+        # Para imágenes sin canal alfa, crear sombra rectangular suave
+        shadow_rect = Image.new("RGBA", (shadow_size, shadow_size), (0, 0, 0, 60))
+        shadow_rect = shadow_rect.filter(ImageFilter.GaussianBlur(shadow_blur))
+        
+        # Calcular posición para centrar
+        shadow_x = x - padding
+        shadow_y = y - padding
+        
+        base.paste(shadow_rect, (shadow_x, shadow_y), shadow_rect)
 
 
 def paste_with_shadow(base, img, position):
-    """Pega una imagen con sombra automática"""
+    """Pega una imagen con sombra automática mejorada"""
     add_shadow_to_image(base, img, position)
     base.paste(img, position, img)

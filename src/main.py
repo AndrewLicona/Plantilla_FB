@@ -43,11 +43,14 @@ class TemplateGeneratorApp:
         
         self.slot_buttons = []
         self.slot_labels = []
-        self.remove_buttons = []
+        
+        # Estado de paneles colapsables
+        self.left_panel_visible = True
+        self.right_panel_visible = True
         
         # Variables de configuración
         self.title_text = tk.StringVar(value="¡VOTA POR TU CRACK!")
-        self.font_family = tk.StringVar(value="arial_bold")
+        self.font_family = tk.StringVar(value="Arial")
         self.title_style = tk.StringVar(value="impacto")
         self.image_shape = tk.StringVar(value="square")
         self.logo_size = tk.DoubleVar(value=0.20)
@@ -57,6 +60,7 @@ class TemplateGeneratorApp:
         self.emoji_size = tk.DoubleVar(value=1.0)
         self.emoji_x_offset = tk.DoubleVar(value=0)
         self.emoji_y_offset = tk.DoubleVar(value=0)
+        self.text_color = tk.StringVar(value="#FFFFFF")
         
         # Variables para la edición global
         self.apply_to_all_title = tk.IntVar(value=0)
@@ -211,19 +215,57 @@ class TemplateGeneratorApp:
         style.configure('Success.TLabel', foreground='green')
         style.configure('Info.TLabel', foreground='gray')
 
+    def create_tooltip(self, widget, text):
+        """Crea un tooltip para un widget."""
+        def on_enter(event):
+            tooltip = tk.Toplevel()
+            tooltip.wm_overrideredirect(True)
+            tooltip.wm_geometry(f"+{event.x_root+10}+{event.y_root+10}")
+            label = tk.Label(tooltip, text=text, background="lightyellow", 
+                           relief=tk.SOLID, borderwidth=1, font=("Arial", 9))
+            label.pack()
+            widget.tooltip = tooltip
+            
+        def on_leave(event):
+            if hasattr(widget, 'tooltip'):
+                widget.tooltip.destroy()
+                del widget.tooltip
+                
+        widget.bind("<Enter>", on_enter)
+        widget.bind("<Leave>", on_leave)
+
     def build_ui(self):
         """Construye la interfaz completa"""
         main_frame = ttk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
-        left = ttk.LabelFrame(main_frame, text="📸 Imágenes", padding=10)
-        left.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+        # Panel izquierdo con botón de toggle integrado
+        self.left_container = ttk.Frame(main_frame)
+        self.left_container.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
         
+        self.left_frame = ttk.LabelFrame(self.left_container, text="📁 Imágenes", padding=10)
+        self.left_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Botón de toggle flotante para panel izquierdo - posición ajustada
+        self.left_toggle_btn = ttk.Button(main_frame, text="◀", command=self.toggle_left_panel, width=2)
+        self.left_toggle_btn.grid(row=0, column=0, sticky="ne", padx=(0, 8), pady=(8, 0))
+        self.create_tooltip(self.left_toggle_btn, "Colapsar panel izquierdo (Ctrl+← o F9)")
+        
+        # Panel central
         center = ttk.LabelFrame(main_frame, text="👁️ Vista Previa", padding=10)
         center.grid(row=0, column=1, sticky="nsew", padx=5, pady=5)
         
-        self.notebook = ttk.Notebook(main_frame)
-        self.notebook.grid(row=0, column=2, sticky="nsew", padx=5, pady=5)
+        # Panel derecho con botón de toggle integrado
+        self.right_container = ttk.Frame(main_frame)
+        self.right_container.grid(row=0, column=2, sticky="nsew", padx=5, pady=5)
+        
+        self.notebook = ttk.Notebook(self.right_container)
+        self.notebook.pack(fill=tk.BOTH, expand=True)
+        
+        # Botón de toggle flotante para panel derecho - posición mejorada
+        self.right_toggle_btn = ttk.Button(main_frame, text="▶", command=self.toggle_right_panel, width=2)
+        self.right_toggle_btn.grid(row=0, column=2, sticky="ne", padx=(0, 8), pady=(8, 0))
+        self.create_tooltip(self.right_toggle_btn, "Colapsar panel derecho (Ctrl+→ o F10)")
         
         config_tab_frame = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(config_tab_frame, text="Avanzado ⚙️")
@@ -231,15 +273,68 @@ class TemplateGeneratorApp:
         self.batch_tab_frame = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(self.batch_tab_frame, text="Lotes 📦")
         
-        main_frame.columnconfigure(0, weight=1, minsize=280)
+        # Configuración de columnas con pesos dinámicos
+        main_frame.columnconfigure(0, weight=1, minsize=50)  # Mínimo pequeño cuando colapsado
         main_frame.columnconfigure(1, weight=2, minsize=560)
-        main_frame.columnconfigure(2, weight=1, minsize=320)
+        main_frame.columnconfigure(2, weight=1, minsize=50)  # Mínimo pequeño cuando colapsado
         main_frame.rowconfigure(0, weight=1)
         
-        create_left_panel(left, self)
+        create_left_panel(self.left_frame, self)
         create_center_panel(center, self)
         create_right_panel(config_tab_frame, self)
         create_batch_panel(self.batch_tab_frame, self)
+        
+        # Atajos de teclado para paneles
+        self.root.bind('<Control-Left>', lambda e: self.toggle_left_panel())
+        self.root.bind('<Control-Right>', lambda e: self.toggle_right_panel())
+        self.root.bind('<F9>', lambda e: self.toggle_left_panel())
+        self.root.bind('<F10>', lambda e: self.toggle_right_panel())
+
+    def toggle_left_panel(self):
+        """Alterna la visibilidad del panel izquierdo."""
+        self.left_panel_visible = not self.left_panel_visible
+        main_frame = self.left_container.master
+        
+        if self.left_panel_visible:
+            # Expandir panel
+            self.left_container.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
+            main_frame.columnconfigure(0, weight=1, minsize=280)
+            self.left_toggle_btn.config(text="◀")
+            self.update_tooltip(self.left_toggle_btn, "Colapsar panel izquierdo (Ctrl+← o F9)")
+        else:
+            # Colapsar panel
+            self.left_container.grid_remove()
+            main_frame.columnconfigure(0, weight=0, minsize=50)
+            self.left_toggle_btn.config(text="▶")
+            self.update_tooltip(self.left_toggle_btn, "Expandir panel izquierdo (Ctrl+← o F9)")
+        self.root.update_idletasks()
+
+    def toggle_right_panel(self):
+        """Alterna la visibilidad del panel derecho."""
+        self.right_panel_visible = not self.right_panel_visible
+        main_frame = self.right_container.master
+        
+        if self.right_panel_visible:
+            # Expandir panel
+            self.right_container.grid(row=0, column=2, sticky="nsew", padx=5, pady=5)
+            main_frame.columnconfigure(2, weight=1, minsize=320)
+            self.right_toggle_btn.config(text="▶")
+            self.update_tooltip(self.right_toggle_btn, "Colapsar panel derecho (Ctrl+→ o F10)")
+        else:
+            # Colapsar panel
+            self.right_container.grid_remove()
+            main_frame.columnconfigure(2, weight=0, minsize=50)
+            self.right_toggle_btn.config(text="◀")
+            self.update_tooltip(self.right_toggle_btn, "Expandir panel derecho (Ctrl+→ o F10)")
+        self.root.update_idletasks()
+
+    def update_tooltip(self, widget, text):
+        """Actualiza el texto de un tooltip."""
+        # Eliminar eventos anteriores
+        widget.unbind("<Enter>")
+        widget.unbind("<Leave>")
+        # Crear nuevo tooltip
+        self.create_tooltip(widget, text)
 
     def set_image_shape(self, shape_name):
         self.image_shape.set(shape_name)
@@ -278,24 +373,12 @@ class TemplateGeneratorApp:
     def _update_slot_visibility(self):
         for i in range(SLOT_MAX):
             is_visible = (i < self.n_slots)
-            
-            parent_frame = self.slot_buttons[i].winfo_parent()
-            slot_card_frame_widget = self.root.nametowidget(parent_frame)
-
-            if is_visible:
-                slot_card_frame_widget.grid()
-                state = 'normal'
-            else:
-                slot_card_frame_widget.grid_remove()
-                state = 'disabled'
+            state = 'normal' if is_visible else 'disabled'
             
             self.slot_buttons[i].config(state=state)
-            self.remove_buttons[i].config(state=state)
             
             if not is_visible:
                 self.slot_labels[i].config(text="", style='Info.TLabel')
-        
-        self.render_preview()
 
     def add_image(self, idx):
         paths = filedialog.askopenfilenames(
@@ -447,19 +530,24 @@ class TemplateGeneratorApp:
                 logo_size=self.logo_size.get(),
                 logo_x=self.logo_x.get(),
                 logo_y=self.logo_y.get(),
-                num_slots=slots_count,
                 emoji_size=self.emoji_size.get(),
                 emoji_x_offset=self.emoji_x_offset.get(),
-                emoji_y_offset=self.emoji_y_offset.get()
+                emoji_y_offset=self.emoji_y_offset.get(),
+                num_slots=slots_count,
+                text_color=self.text_color.get()
             )
             
-            self.preview_tk = ImageTk.PhotoImage(preview)
+            # Convertir a PhotoImage y mostrar
+            self.preview_img = ImageTk.PhotoImage(preview)
             self.preview_canvas.delete("all")
-            self.preview_canvas.create_image(CANVAS_SIZE[0]//2, CANVAS_SIZE[1]//2, image=self.preview_tk)
+            # Centrar la imagen en el canvas (540x540 / 2 = 270,270)
+            self.preview_canvas.create_image(270, 270, image=self.preview_img)
+            
         except Exception as e:
-            messagebox.showerror("Error en preview", str(e))
-            import traceback
-            traceback.print_exc()
+            print(f"Error en render_preview: {e}")
+            # Mostrar placeholder en caso de error
+            self.preview_canvas.delete("all")
+            self.preview_canvas.create_text(270, 270, text="Error en preview", fill="red")
 
     def generate_and_save(self):
         """Generar y guardar plantilla final"""
@@ -484,7 +572,8 @@ class TemplateGeneratorApp:
                 num_slots=slots_count,
                 emoji_size=self.emoji_size.get(),
                 emoji_x_offset=self.emoji_x_offset.get(),
-                emoji_y_offset=self.emoji_y_offset.get()
+                emoji_y_offset=self.emoji_y_offset.get(),
+                text_color=self.text_color.get()
             )
             
             path = filedialog.asksaveasfilename(

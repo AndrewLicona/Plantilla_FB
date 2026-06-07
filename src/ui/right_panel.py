@@ -5,6 +5,7 @@ Módulo para la construcción del panel derecho de configuración avanzada.
 import tkinter as tk
 from tkinter import ttk
 from src.config import HAS_TKDND, DND_FILES
+from src.utils import get_system_fonts
 
 def create_right_panel(parent, app):
     """Crea los widgets para el panel derecho y los añade al frame padre."""
@@ -34,26 +35,37 @@ def create_right_panel(parent, app):
     
     ttk.Label(parent, text="Fuente:").pack(anchor=tk.W)
     
-    font_button_frame = ttk.Frame(parent)
-    font_button_frame.pack(fill=tk.X, pady=2)
-    
-    fonts = [
-        ("Arial Bold", "arial_bold"), ("Impact", "impact"), ("Comic Sans", "comic"),
-        ("Times", "times")
+    # Solo 3 opciones principales de fuentes
+    font_options = [
+        "Arial (Moderna)",
+        "Impact (Bold)", 
+        "Times (Clásica)"
     ]
     
-    row, col = 0, 0
-    for name, value in fonts:
-        btn = ttk.Button(font_button_frame, text=name, command=lambda v=value: app.set_font(v), width=10)
-        btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-        col += 1
-        if col > 2:
-            col = 0
-            row += 1
+    # Crear combobox para fuentes
+    app.font_selector = ttk.Combobox(parent, values=font_options, state="readonly")
+    app.font_selector.pack(fill=tk.X, padx=5, pady=2)
+    app.font_selector.set("Arial (Moderna)")
     
-    font_button_frame.columnconfigure(0, weight=1)
-    font_button_frame.columnconfigure(1, weight=1)
-    font_button_frame.columnconfigure(2, weight=1)
+    # Mapeo directo de opciones a fuentes internas
+    def map_option_to_internal_font(option):
+        """Mapea una opción del combobox a una fuente interna"""
+        if "Arial" in option:
+            return 'arial_bold'
+        elif "Impact" in option:
+            return 'impact'
+        elif "Times" in option:
+            return 'times'
+        else:
+            return 'arial_bold'
+    
+    # Evento de cambio
+    def on_font_change(event):
+        selected_option = app.font_selector.get()
+        internal_font = map_option_to_internal_font(selected_option)
+        app.set_font(internal_font)
+    
+    app.font_selector.bind("<<ComboboxSelected>>", on_font_change)
     
     ttk.Separator(parent).pack(fill=tk.X, pady=10)
     
@@ -63,31 +75,67 @@ def create_right_panel(parent, app):
     ttk.Label(effect_label_frame, text="Efecto:").pack(side=tk.LEFT)
     ttk.Checkbutton(effect_label_frame, text="Aplicar a todos", variable=app.apply_to_all_style).pack(side=tk.RIGHT)
 
-    effect_button_frame = ttk.Frame(parent)
-    effect_button_frame.pack(fill=tk.X, pady=2)
-
-    effects = [
-        ("Simple", "simple"), ("Contorno", "contorno"),
-        ("Sombra Suave", "sombra_suave"), ("Impacto", "impacto")
+    # Opciones de efectos en combobox
+    effect_options = [
+        "Simple (Limpio)",
+        "Contorno (Borde)",
+        "Sombra Suave",
+        "Impacto (3D)"
     ]
     
-    row, col = 0, 0
-    for name, value in effects:
-        btn = ttk.Button(effect_button_frame, text=name, command=lambda v=value: app.on_style_change(v), width=10)
-        btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-        col += 1
-        if col > 2:
-            col = 0
-            row += 1
+    # Crear combobox para efectos
+    app.effect_selector = ttk.Combobox(parent, values=effect_options, state="readonly")
+    app.effect_selector.pack(fill=tk.X, padx=5, pady=2)
+    app.effect_selector.set("Simple (Limpio)")
     
-    effect_button_frame.columnconfigure(0, weight=1)
-    effect_button_frame.columnconfigure(1, weight=1)
-    effect_button_frame.columnconfigure(2, weight=1)
+    # Mapeo de opciones a efectos internos
+    def map_option_to_effect(option):
+        """Mapea una opción del combobox a un efecto interno"""
+        if "Simple" in option:
+            return 'simple'
+        elif "Contorno" in option:
+            return 'contorno'
+        elif "Sombra" in option:
+            return 'sombra_suave'
+        elif "Impacto" in option:
+            return 'impacto'
+        else:
+            return 'simple'
     
-    ttk.Separator(parent).pack(fill=tk.X, pady=15)
-    ttk.Separator(parent).pack(fill=tk.X, pady=15)
+    # Evento de cambio de efecto
+    def on_effect_change(event):
+        selected_option = app.effect_selector.get()
+        internal_effect = map_option_to_effect(selected_option)
+        app.on_style_change(internal_effect)
     
-    ttk.Button(parent, text="🗑️ Limpiar Todo", command=app.clear_all).pack(fill=tk.X, pady=5)
+    app.effect_selector.bind("<<ComboboxSelected>>", on_effect_change)
+    
+    # Selector de color del texto - layout optimizado
+    color_frame = ttk.Frame(parent)
+    color_frame.pack(fill=tk.X, pady=2)
+    
+    ttk.Label(color_frame, text="Color:", width=8).pack(side=tk.LEFT, padx=(0, 5))
+    
+    # Variable para el color
+    app.text_color = tk.StringVar(value="#FFFFFF")  # Blanco por defecto
+    
+    # Botón para seleccionar color
+    def choose_text_color():
+        from tkinter import colorchooser
+        color = colorchooser.askcolor(initialcolor=app.text_color.get())
+        if color[1]:  # Si el usuario no canceló
+            app.text_color.set(color[1])
+            app.color_button.config(bg=color[1])
+            app.render_preview()
+    
+    # Botón de color más compacto
+    app.color_button = tk.Button(color_frame, text="Elegir", bg=app.text_color.get(), 
+                                 command=choose_text_color, width=12, height=1)
+    app.color_button.pack(side=tk.RIGHT, padx=5)
+    
+    ttk.Separator(parent).pack(fill=tk.X, pady=10)
+    
+    ttk.Button(parent, text="🗑️ Limpiar", command=app.clear_all).pack(fill=tk.X, pady=5)
     
     if HAS_TKDND:
         ttk.Label(parent, text="✅ Drag & Drop activado", foreground="green").pack(pady=10)

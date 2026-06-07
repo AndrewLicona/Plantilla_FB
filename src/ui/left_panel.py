@@ -9,55 +9,65 @@ from src.config import SLOT_MAX
 def create_left_panel(parent, app):
     """Crea los widgets para el panel izquierdo y los añade al frame padre."""
     
-    ttk.Label(parent, text="Añadir imágenes (2-4):", style='Header.TLabel').pack(pady=(0, 10), anchor=tk.W)
+    # Contenedor principal para imágenes y cantidad
+    main_container = ttk.LabelFrame(parent, text="📁 Gestión de Imágenes", padding=10)
+    main_container.pack(fill=tk.X, pady=(0, 10))
     
-    slots_container_frame = ttk.Frame(parent)
-    slots_container_frame.pack(fill=tk.X, pady=5)
+    # Sección de botones de cantidad en la parte superior
+    ttk.Label(main_container, text="Cantidad de imágenes:", font=('Arial', 9, 'bold')).pack(anchor=tk.W, pady=(0, 5))
     
-    slots_container_frame.columnconfigure(0, weight=1)
-    slots_container_frame.columnconfigure(1, weight=1)
+    quantity_frame = ttk.Frame(main_container)
+    quantity_frame.pack(fill=tk.X, pady=(0, 10))
+    
+    for n in range(2, SLOT_MAX + 1):
+        btn = ttk.Button(quantity_frame, text=str(n), command=lambda num=n: app._update_n_slots_and_render(num), width=8)
+        btn.pack(side=tk.LEFT, padx=2, expand=True, fill=tk.X)
+    
+    # Separador
+    ttk.Separator(main_container, orient='horizontal').pack(fill=tk.X, pady=5)
+    
+    # Sección de slots de imágenes - diseño optimizado sin cajas anidadas
+    slots_frame = ttk.Frame(main_container)
+    slots_frame.pack(fill=tk.X, pady=5)
     
     for i in range(SLOT_MAX):
-        slot_card_frame = ttk.Frame(slots_container_frame, relief=tk.RIDGE, borderwidth=1, padding=5)
-        row = i // 2 
-        col = i % 2
-        slot_card_frame.grid(row=row, column=col, sticky="nsew", padx=3, pady=3)
-        slot_card_frame.columnconfigure(0, weight=1)
+        # Botón de imagen directamente con estilo de tarjeta
+        btn_img = ttk.Button(
+            slots_frame, 
+            text=f"📁 Imagen {i+1}", 
+            width=16,
+            command=lambda idx=i: app.add_image(idx)
+        )
         
-        btn_img = ttk.Button(slot_card_frame, text=f"📁 Imagen {i+1}", width=12, command=lambda idx=i: app.add_image(idx))
-        btn_img.grid(row=0, column=0, sticky="ew", padx=(0,2), pady=(0,2))
-
-        rm = ttk.Button(slot_card_frame, text="❌", width=3, command=lambda idx=i: app.remove_image(idx))
-        rm.grid(row=0, column=1, sticky="e", pady=(0,2))
-        app.remove_buttons.append(rm)
+        # Layout 2x2 optimizado
+        row = i // 2
+        col = i % 2
+        btn_img.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
+        
+        # Agregar menú contextual para eliminar imagen
+        context_menu = tk.Menu(slots_frame, tearoff=0)
+        context_menu.add_command(label="🗑️ Eliminar imagen", command=lambda idx=i: app.remove_image(idx))
+        
+        def show_context_menu(event):
+            if app.slots[i] is not None:  # Solo mostrar si hay imagen
+                context_menu.post(event.x_root, event.y_root)
+        
+        btn_img.bind("<Button-3>", show_context_menu)
         
         app.slot_buttons.append(btn_img)
         
-        lbl = ttk.Label(slot_card_frame, text="", style='Info.TLabel', anchor=tk.CENTER)
-        lbl.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(0,2))
+        # Label de estado como parte del mismo botón (más compacto)
+        lbl = ttk.Label(slots_frame, text="", style='Info.TLabel', anchor=tk.CENTER, font=('Arial', 7))
+        lbl.grid(row=row*2+1, column=col, sticky="ew", padx=2, pady=(0,2))
         app.slot_labels.append(lbl)
+    
+    # Configurar columnas para distribución equitativa
+    slots_frame.columnconfigure(0, weight=1)
+    slots_frame.columnconfigure(1, weight=1)
 
-    ttk.Button(parent, text="🗑️ Limpiar Imágenes", command=app.clear_slot_images).pack(fill=tk.X, pady=5)
-    ttk.Separator(parent).pack(fill=tk.X, pady=10)
+    # Botón de limpiar más compacto
+    ttk.Button(main_container, text="🗑️ Limpiar Todo", command=app.clear_slot_images, width=20).pack(pady=(10, 0))
     
-    ttk.Label(parent, text="Cantidad de imágenes:").pack(anchor=tk.W)
-    
-    slots_button_frame = ttk.Frame(parent)
-    slots_button_frame.pack(fill=tk.X, pady=5)
-    
-    row, col = 0, 0
-    for n in range(2, SLOT_MAX + 1):
-        btn = ttk.Button(slots_button_frame, text=str(n), command=lambda num=n: app._update_n_slots_and_render(num), width=10)
-        btn.grid(row=row, column=col, sticky="ew", padx=2, pady=2)
-        col += 1
-        if col > 2:
-            col = 0
-            row += 1
-    
-    slots_button_frame.columnconfigure(0, weight=1)
-    slots_button_frame.columnconfigure(1, weight=1)
-    slots_button_frame.columnconfigure(2, weight=1)
-
     ttk.Separator(parent).pack(fill=tk.X, pady=15)
 
     ttk.Label(parent, text="Forma de Imágenes:", style='Header.TLabel').pack(pady=(0, 5), anchor=tk.W)

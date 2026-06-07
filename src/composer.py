@@ -30,7 +30,8 @@ def compose_template(
     emoji_size=0.45,
     emoji_x_offset=0,
     emoji_y_offset=0,
-    num_slots=3
+    num_slots=3,
+    text_color="#FFFFFF"
 ):
     """
     Genera la plantilla completa con layout adaptativo
@@ -72,7 +73,7 @@ def compose_template(
         y_title = int(H * TITLE_POSITION['y'])
         
         draw_text_with_style(draw, title_text, (x_title, y_title), 
-                           font_title, TITLE_COLOR, style, W, H)
+                           font_title, text_color, style, W, H)
 
     # 3. IMÁGENES Y EMOJIS
     n = num_slots
